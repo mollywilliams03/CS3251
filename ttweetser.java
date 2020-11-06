@@ -5,6 +5,8 @@ import java.net.*;
 
 public class ttweetser {
 
+    static HashSet<String> currentUsers = new HashSet<>();
+
     public static void main(String args[]) throws Exception {
         if (args.length != 1) {
             System.out.println("error: args should contain <ServerPort>");
@@ -20,19 +22,24 @@ public class ttweetser {
                 socket = serverSocket.accept();
 
                 //in and out streams
-                DataInputStream in = new DataInputStream(socket.getInputStream());
-                //InputStream in = socket.getInputStream();
-                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                //BufferedReader d = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                //BufferedReader reader = new BufferedReader(new InputStreamReader(in)); //pull information from socket
-                //String line = reader.readLine();
-                System.out.println(in);
-                //System.out.println(d.readLine());
 
+                InputStream in = socket.getInputStream();
+                OutputStream out = socket.getOutputStream();
 
-                Thread newThread = new ClientHandler(socket, in, out);
+                PrintWriter writer = new PrintWriter(out, true);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in)); //pull information from socket
+                String line = reader.readLine();
 
-                newThread.start();
+                //logic to quit if user is already logged in
+                if (currentUsers.contains(line)) {
+                    writer.println("username illegal, connection refused.");
+                } else {
+                    currentUsers.add(line);
+                    Thread newThread = new ClientHandler(socket, in, out);
+                    newThread.start();
+                }
+                System.out.println(currentUsers);
+
             }
             catch (Exception e)
             {
@@ -47,11 +54,13 @@ public class ttweetser {
 }
 
 class ClientHandler extends Thread {
-    final DataInputStream in;
-    final DataOutputStream out;
+    //final DataInputStream in;
+    //final DataOutputStream out;
+    final InputStream in;
+    final OutputStream out;
     final Socket socket;
 
-    public ClientHandler(Socket socket, DataInputStream in, DataOutputStream out) {
+    public ClientHandler(Socket socket, InputStream in, OutputStream out) {
         this.socket = socket;
         this.in = in;
         this.out = out;
@@ -59,14 +68,26 @@ class ClientHandler extends Thread {
 
     public void run() {
         String received, toReturn;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        PrintWriter writer = new PrintWriter(out, true);
         while (true) {
             try {
-                out.writeUTF("Whats up");
-                received = in.readUTF();
+                writer.println("whats up");
+                //received = in.readUTF();
+                received = reader.readLine();
                 System.out.println("check Server");
                 if (received.length() > 7 && received.substring(0,7).equals("tweet \"")) {
-                    String theTweet = received.substring(7, received.length());
-                    //tweet logic
+                    String remaining = received.substring(7, received.length());
+                    int endOfTweet = remaining.indexOf('"');
+                    String theTweet = remaining.substring(0,endOfTweet);
+                    if (theTweet.length() == 0) {
+                        writer.println("message format illegal.");
+                    } else if (theTweet.length() > 150) {
+                        writer.println("message length illegal, connection refused.");
+                    } else {
+                        System.out.println(theTweet);
+                    }
+
                 } else if (received.length() > 13 && received.substring(0,13).equals("unsubscribe #")) {
                     //unsubscribe logic
                 } else if (received.length() > 11 && received.substring(0,11).equals("subscribe #")) {
@@ -74,7 +95,6 @@ class ClientHandler extends Thread {
                 } else if (received.equals("timeline")) {
                     //timeline logic
                 } else if (received.equals("exit")) {
-                    System.out.println("Client " + this.socket + " sends exit...");
                     System.out.println("Closing this connection.");
                     this.socket.close();
                     System.out.println("Connection closed");
@@ -94,12 +114,12 @@ class ClientHandler extends Thread {
                 e.printStackTrace();
             }
 
-            try {
-                this.in.close();
-                this.out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            //try {
+            //    this.in.close();
+            //    this.out.close();
+            //} catch (IOException e) {
+            //    e.printStackTrace();
+            //}
         }
     }
 }
