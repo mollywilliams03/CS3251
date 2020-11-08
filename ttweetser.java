@@ -6,8 +6,12 @@ import java.net.*;
 public class ttweetser {
 
     static HashSet<String> currentUsers = new HashSet<>();
+<<<<<<< HEAD
     static HashMap<String, ClientHandler> hashtags = new HashMap<String, ClientHandler>();
     static LinkedList<String> messages = new LinkedList[5]; //stores all the messages
+=======
+    static HashSet<ClientHandler> userObjects = new HashSet<>();
+>>>>>>> b689b67c9d2ac1f9bacd68ec1ae63f3870a1c2b8
 
     public static LinkedList<String> getMessages() {
         return messages;
@@ -23,6 +27,10 @@ public class ttweetser {
 
     public static void setHashtags(HashMap<String, ClientHandler> hash) {
         hashtags = hash;
+    }
+
+    public static void removeUser(String username) {
+        currentUsers.remove(username);
     }
 
     public static void main(String args[]) throws Exception {
@@ -77,11 +85,14 @@ class ClientHandler extends Thread {
     final InputStream in;
     final OutputStream out;
     final Socket socket;
+    final String username;
 
-    public ClientHandler(Socket socket, InputStream in, OutputStream out) {
+
+    public ClientHandler(Socket socket, InputStream in, OutputStream out, String username) {
         this.socket = socket;
         this.in = in;
         this.out = out;
+        this.username = username;
     }
 
     public void run() {
@@ -131,6 +142,7 @@ class ClientHandler extends Thread {
                     System.out.println("Closing this connection.");
                     this.socket.close();
                     System.out.println("Connection closed");
+                    ttweetser.removeUser(username);
                     //add logic to have user info removed
                     break;
                 } else if (received.equals("getusers")) {
