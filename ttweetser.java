@@ -6,9 +6,23 @@ import java.net.*;
 public class ttweetser {
 
     static HashSet<String> currentUsers = new HashSet<>();
+    static HashMap<String, ClientHandler> hashtags = new HashMap<String, ClientHandler>();
+    static LinkedList<String> messages = new LinkedList[5]; //stores all the messages
 
-    public static HashSet<String> getUsers() {
-        return currentUsers;
+    public static LinkedList<String> getMessages() {
+        return messages;
+    }
+
+    public static void setMessages(LinkedList<String> mess) {
+        messages = mess;
+    }
+
+    public static HashMap<String, ClientHandler> getHashtags() {
+        return hashtags;
+    }
+
+    public static void setHashtags(HashMap<String, ClientHandler> hash) {
+        hashtags = hash;
     }
 
     public static void main(String args[]) throws Exception {
@@ -42,6 +56,7 @@ public class ttweetser {
                     Thread newThread = new ClientHandler(socket, in, out);
                     newThread.start();
                 }
+                System.out.println(currentUsers);
 
             }
             catch (Exception e)
@@ -76,24 +91,40 @@ class ClientHandler extends Thread {
         while (true) {
             try {
                 writer.println("whats up");
+                //received = in.readUTF();
                 received = reader.readLine();
                 System.out.println("check Server");
                 if (received.length() > 7 && received.substring(0,7).equals("tweet \"")) {
                     String remaining = received.substring(7, received.length());
                     int endOfTweet = remaining.indexOf('"');
                     String theTweet = remaining.substring(0,endOfTweet);
+                    String hash = theTweet
                     if (theTweet.length() == 0) {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
                         writer.println("message length illegal, connection refused.");
                     } else {
-                        System.out.println(theTweet);
+                        //access hashmap of hashtags, send out to the users somehow
+                        // System.out.println(theTweet);
+                        LinkedList<String> messages = ttweetser.getMessages();
+                        for (i = 0; i <5; i++) { //goes through the messages array, finds the user's linked list and adds to it
+                            if (messages[i].equals(username)) {
+                                messages[i].add(theTweet);
+                                break;
+                            }
+                        }
+                        ttweetser.setMessages(messgaes);
+                        HashMap<String, ClientHandler> hashtags = ttweetser.getHashtags();
+
                     }
 
                 } else if (received.length() > 13 && received.substring(0,13).equals("unsubscribe #")) {
                     //unsubscribe logic
+                    //remove this user from the hashmap of hashtags
                 } else if (received.length() > 11 && received.substring(0,11).equals("subscribe #")) {
                     //subscribe logic
+                    //add them to the hashmap
+                    //check if the hashtag exists, if it doesn't just add an entry to the hashmap, if it does then add to that entry
                 } else if (received.equals("timeline")) {
                     //timeline logic
                 } else if (received.equals("exit")) {
@@ -103,8 +134,7 @@ class ClientHandler extends Thread {
                     //add logic to have user info removed
                     break;
                 } else if (received.equals("getusers")) {
-                    HashSet<String> currUsers = ttweetser.getUsers();
-                    writer.println(currUsers);
+                    //getusers logic
                 } else if (received.equals("gettweets")) {
                     //gettweets logic
                 } else {
@@ -117,6 +147,12 @@ class ClientHandler extends Thread {
                 e.printStackTrace();
             }
 
+            //try {
+            //    this.in.close();
+            //    this.out.close();
+            //} catch (IOException e) {
+            //    e.printStackTrace();
+            //}
         }
     }
 }
