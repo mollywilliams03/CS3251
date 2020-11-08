@@ -6,9 +6,14 @@ import java.net.*;
 public class ttweetser {
 
     static HashSet<String> currentUsers = new HashSet<>();
+    static HashSet<ClientHandler> userObjects = new HashSet<>();
 
     public static HashSet<String> getUsers() {
         return currentUsers;
+    }
+
+    public static void removeUser(String username) {
+        currentUsers.remove(username);
     }
 
     public static void main(String args[]) throws Exception {
@@ -62,11 +67,14 @@ class ClientHandler extends Thread {
     final InputStream in;
     final OutputStream out;
     final Socket socket;
+    final String username;
 
-    public ClientHandler(Socket socket, InputStream in, OutputStream out) {
+
+    public ClientHandler(Socket socket, InputStream in, OutputStream out, String username) {
         this.socket = socket;
         this.in = in;
         this.out = out;
+        this.username = username;
     }
 
     public void run() {
@@ -100,6 +108,7 @@ class ClientHandler extends Thread {
                     System.out.println("Closing this connection.");
                     this.socket.close();
                     System.out.println("Connection closed");
+                    ttweetser.removeUser(username);
                     //add logic to have user info removed
                     break;
                 } else if (received.equals("getusers")) {
