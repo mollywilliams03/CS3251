@@ -6,18 +6,15 @@ import java.net.*;
 public class ttweetser {
 
     static HashSet<String> currentUsers = new HashSet<>();
-<<<<<<< HEAD
     static HashMap<String, ClientHandler> hashtags = new HashMap<String, ClientHandler>();
-    static LinkedList<String> messages = new LinkedList[5]; //stores all the messages
-=======
+    static LinkedList<String>[] messages = new LinkedList[5]; //stores all the messages
     static HashSet<ClientHandler> userObjects = new HashSet<>();
->>>>>>> b689b67c9d2ac1f9bacd68ec1ae63f3870a1c2b8
 
-    public static LinkedList<String> getMessages() {
+    public static LinkedList<String>[] getMessages() {
         return messages;
     }
 
-    public static void setMessages(LinkedList<String> mess) {
+    public static void setMessages(LinkedList<String>[] mess) {
         messages = mess;
     }
 
@@ -61,7 +58,7 @@ public class ttweetser {
                     writer.println("username illegal, connection refused.");
                 } else {
                     currentUsers.add(line);
-                    Thread newThread = new ClientHandler(socket, in, out);
+                    Thread newThread = new ClientHandler(socket, in, out, line);
                     newThread.start();
                 }
                 System.out.println(currentUsers);
@@ -109,7 +106,7 @@ class ClientHandler extends Thread {
                     String remaining = received.substring(7, received.length());
                     int endOfTweet = remaining.indexOf('"');
                     String theTweet = remaining.substring(0,endOfTweet);
-                    String hash = theTweet
+                    // String hash = theTweet
                     if (theTweet.length() == 0) {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
@@ -117,14 +114,14 @@ class ClientHandler extends Thread {
                     } else {
                         //access hashmap of hashtags, send out to the users somehow
                         // System.out.println(theTweet);
-                        LinkedList<String> messages = ttweetser.getMessages();
-                        for (i = 0; i <5; i++) { //goes through the messages array, finds the user's linked list and adds to it
+                        LinkedList<String>[] messages = ttweetser.getMessages();
+                        for (int i = 0; i <5; i++) { //goes through the messages array, finds the user's linked list and adds to it
                             if (messages[i].equals(username)) {
                                 messages[i].add(theTweet);
                                 break;
                             }
                         }
-                        ttweetser.setMessages(messgaes);
+                        ttweetser.setMessages(messages);
                         HashMap<String, ClientHandler> hashtags = ttweetser.getHashtags();
 
                     }
