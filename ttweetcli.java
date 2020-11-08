@@ -21,13 +21,10 @@ public class ttweetcli {
                 System.exit(0);
             }
         }
-        try //(Socket socket = new Socket(serverAddr, serverPort)) {
+        try
             {
                 Scanner scanner = new Scanner(System.in);
                 Socket socket = new Socket(serverIP, serverPort);
-
-                //DataInputStream in = new DataInputStream(socket.getInputStream());
-                //DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
                 OutputStream out = socket.getOutputStream();
 
@@ -45,14 +42,8 @@ public class ttweetcli {
                     }
 
                 while (true) {
-                    //System.out.println(in.readUTF());
                     String line = reader.readLine();
-                    //if (line.equals("username illegal, connection refused.")) {
-                    //    System.out.println("username illegal, connection refused.");
-                    //    System.exit(0);
-                    //} else {
-                    //    System.out.println("username legal, connection established.");
-                    //}
+
 
                     if (line.equals("message format illegal.")) {
                         System.out.println("message format illegal.");

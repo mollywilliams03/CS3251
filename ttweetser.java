@@ -7,6 +7,10 @@ public class ttweetser {
 
     static HashSet<String> currentUsers = new HashSet<>();
 
+    public static HashSet<String> getUsers() {
+        return currentUsers;
+    }
+
     public static void main(String args[]) throws Exception {
         if (args.length != 1) {
             System.out.println("error: args should contain <ServerPort>");
@@ -38,7 +42,6 @@ public class ttweetser {
                     Thread newThread = new ClientHandler(socket, in, out);
                     newThread.start();
                 }
-                System.out.println(currentUsers);
 
             }
             catch (Exception e)
@@ -73,7 +76,6 @@ class ClientHandler extends Thread {
         while (true) {
             try {
                 writer.println("whats up");
-                //received = in.readUTF();
                 received = reader.readLine();
                 System.out.println("check Server");
                 if (received.length() > 7 && received.substring(0,7).equals("tweet \"")) {
@@ -101,7 +103,8 @@ class ClientHandler extends Thread {
                     //add logic to have user info removed
                     break;
                 } else if (received.equals("getusers")) {
-                    //getusers logic
+                    HashSet<String> currUsers = ttweetser.getUsers();
+                    writer.println(currUsers);
                 } else if (received.equals("gettweets")) {
                     //gettweets logic
                 } else {
@@ -114,12 +117,6 @@ class ClientHandler extends Thread {
                 e.printStackTrace();
             }
 
-            //try {
-            //    this.in.close();
-            //    this.out.close();
-            //} catch (IOException e) {
-            //    e.printStackTrace();
-            //}
         }
     }
 }
