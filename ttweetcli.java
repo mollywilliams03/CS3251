@@ -49,11 +49,6 @@ public class ttweetcli {
 
                     String line = reader.readLine();
 
-                    //if (line.equals("message format illegal.")) {
-                    //    System.out.println("message format illegal.");
-                    //} else if (line.equals("message length illegal, connection refused.")) {
-                    //    System.out.println("message length illegal, connection refused.");
-                    //}
                     if (line != null) {
                         if (!line.equals("null")) {
                             System.out.println(line);
@@ -63,10 +58,9 @@ public class ttweetcli {
                     //     System.out.println(line);
                     // }
 
-                    System.out.println("check Client");
-                    //socket.close();
+             
                     if (tosend.equals("exit")) {
-                        System.out.println("Closing this connection : " + socket);
+                        System.out.println("bye bye");
                         socket.close();
                         System.out.println("Connection closed");
                         break;
