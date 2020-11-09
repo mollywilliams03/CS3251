@@ -6,9 +6,9 @@ import java.net.*;
 public class ttweetser {
 
     static HashSet<String> currentUsers = new HashSet<>();
-    static HashMap<String, ArrayList<ClientHandler>> hashtags = new HashMap<String, ArrayList<ClientHandler>>();
+    static HashMap<String, ArrayList<ClientHandler>> hashtags = new HashMap<String, ArrayList<ClientHandler>>(); //maps hashtags to people subscribed to them
     static LinkedList<String>[] messages = new LinkedList[5]; //stores all the messages
-    static HashSet<ClientHandler> userObjects = new HashSet<>();
+    static HashMap<String, ArrayList<String>> usersToSub = new HashMap<>(); //maps users to their subscriptions
 
     public static LinkedList<String>[] getMessages() {
         return messages;
@@ -31,6 +31,12 @@ public class ttweetser {
     }
 
     public static HashSet<String> getUsers() {return currentUsers; }
+
+    public static HashMap<String, ArrayList<String>> getUsersToSub() {
+        return usersToSub;
+    }
+
+    public static void setUsersToSub(HashMap<String, ArrayList<String>> subs) { usersToSub = subs; }
 
     public static void main(String args[]) throws Exception {
         if (args.length != 1) {
@@ -107,6 +113,9 @@ class ClientHandler extends Thread {
                 //received = in.readUTF();
                 received = reader.readLine();
                 System.out.println(received);
+                HashMap<String, ArrayList<String>> usersMap = ttweetser.getUsersToSub(); //gets the users mapped with their subs
+                usersMap.putIfAbsent(username, new ArrayList<String>());
+                ttweetser.setUsersToSub(usersMap);
                 if (received.length() > 7 && received.substring(0,7).equals("tweet \"")) {
                     String remaining = received.substring(7, received.length());
                     int endOfTweet = remaining.indexOf("\"");
@@ -161,6 +170,13 @@ class ClientHandler extends Thread {
                         ArrayList<ClientHandler> toRemoveFrom = hashtags.get(unhash);
                         toRemoveFrom.remove(this);
                     }
+                    ArrayList<String> values = usersToSub.get(username); //current users current subscriptions
+                    for (int i = 0; i < values.size(); i++) {
+                        if (values.get(i).equals(unhash)) {
+                            values.remove(i);
+                        }
+                    }
+
                     ttweetser.setHashtags(hashtags); //sets with the changes made
                 } else if (received.length() > 11 && received.substring(0,11).equals("subscribe #")) {
                     //subscribe logic
@@ -168,30 +184,58 @@ class ClientHandler extends Thread {
                     //check if the hashtag exists, if it doesn't just add an entry to the hashmap, if it does then add to that entry
                     String sub = received.substring(11,received.length()); //gets the hashtag
                     HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags(); //gets the hashtags
-                    if (sub.equals("ALL")) {
-                        //subscirbe to all
-                        for (Map.Entry<String, ArrayList<ClientHandler>> set : hashtags.entrySet()) { //loops through the hashtags
-                            ArrayList<ClientHandler> toAddTo = set.getValue(); //gets the value of this particular set
-                            toAddTo.add(this); //add if its there
-                        }
-                    } else {
-                        if (hashtags.containsKey(sub)) { //if its already in there
-                            ArrayList<ClientHandler> toAddTo = hashtags.get(sub); //gets hashtag's arraylist
-                            toAddTo.add(this); //adds the user to the arraylist
+                    HashMap<String, ArrayList<String>> usersToSub = ttweetser.getUsersToSub(); //gets the users mapped with their subs
+                    ArrayList<String> values = usersToSub.get(username); //current users current subscriptions
+                    if (values.size() < 3) {
+                        if (sub.equals("ALL")) {
+                            //subscribe to all
+                            for (Map.Entry<String, ArrayList<ClientHandler>> set : hashtags.entrySet()) { //loops through the hashtags
+                                ArrayList<ClientHandler> toAddTo = set.getValue(); //gets the value of this particular set
+                                toAddTo.add(this); //add if its there
+                            }
                         } else {
-                            ArrayList<ClientHandler> newHash = new ArrayList<ClientHandler>(); //creates new arraylist
-                            newHash.add(this); //adds this user to the arraylist
-                            hashtags.put(sub, newHash); //adds the hashtag with this user subscribed to it
+                            if (hashtags.containsKey(sub)) { //if its already in there
+                                ArrayList<ClientHandler> toAddTo = hashtags.get(sub); //gets hashtag's arraylist
+                                toAddTo.add(this); //adds the user to the arraylist
+                            } else {
+                                ArrayList<ClientHandler> newHash = new ArrayList<ClientHandler>(); //creates new arraylist
+                                newHash.add(this); //adds this user to the arraylist
+                                hashtags.put(sub, newHash); //adds the hashtag with this user subscribed to it
+                            }
                         }
+                        int check = 0; //variable to check if already subscribed
+                        for (int i = 0; i < values.size(); i++) {
+                            if (values.get(i).equals(sub)) {
+                                check = 1;
+                            }
+                        }
+                        if (check == 0) { //not subscribed already, need to add to values
+                            values.add(sub);
+                            usersToSub.replace(username, values);
+                        }
+                        check = 0; //reset check
+                        ttweetser.setUsersToSub(usersToSub);
+                    } else {
+                        writer.println("sub " + sub + " failed, already exists or exceeds 3 limitation");
                     }
                     ttweetser.setHashtags(hashtags); //sets with the changes made
                 } else if (received.equals("timeline")) {
                     //timeline logic
                 } else if (received.equals("exit")) {
-                    System.out.println("Closing this connection.");
+                    HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags(); //gets the hashtags
+                    HashMap<String, ArrayList<String>> usersToSub = ttweetser.getUsersToSub(); //gets the users mapped with their subs
+                    ArrayList<String> values = usersToSub.get(username); //current users current subscriptions
+                    for (int i = 0; i < values.size(); i++) { //remove the users from the hashtag subscriptions
+                        ArrayList<ClientHandler> hashTagUsers = hashtags.get(values.get(i));
+                        hashTagUsers.remove(this);
+                        hashtags.replace(values.get(i), hashTagUsers);
+                    }
+
                     this.socket.close();
-                    System.out.println("Connection closed");
                     ttweetser.removeUser(username);
+                    usersToSub.remove(username);
+                    ttweetser.setUsersToSub(usersToSub);
+                    ttweetser.setHashtags(hashtags);
                     //add logic to have user info removed
                     break;
                 } else if (received.equals("getusers")) {
