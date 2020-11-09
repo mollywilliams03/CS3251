@@ -9,6 +9,8 @@ public class ttweetser {
     static HashMap<String, ArrayList<ClientHandler>> hashtags = new HashMap<String, ArrayList<ClientHandler>>(); //maps hashtags to people subscribed to them
     static LinkedList<String>[] messages = new LinkedList[5]; //stores all the messages
     static HashMap<String, ArrayList<String>> usersToSub = new HashMap<>(); //maps users to their subscriptions
+    static ArrayList<ArrayList<String>> timelines = new ArrayList<ArrayList<String>>(5); //fist element in the arraylist is the user the list belongs to, the next ones are the messages
+    //ArrayList<ArrayList<Individual>> group = new ArrayList<ArrayList<Individual>>(4);
 
     public static LinkedList<String>[] getMessages() {
         return messages;
@@ -38,15 +40,8 @@ public class ttweetser {
 
     public static void setUsersToSub(HashMap<String, ArrayList<String>> subs) { usersToSub = subs; }
 
-    public static void publish(String message, String hashtagToSend) {
-        ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
-        if (list != null) {
-            for (int i = 0; i < list.size(); i++) {
-                ClientHandler obj = list.get(i); //gets the client object to publish to
-                PrintWriter writer = new PrintWriter(obj.out, true); //creates the specific writer
-                writer.println(message);
-            }
-        }
+    public static ArrayList<ArrayList<String>> getTimelines() { 
+        return timelines;
     }
 
     public static void main(String args[]) throws Exception {
@@ -136,7 +131,7 @@ class ClientHandler extends Thread {
                         theTweet = remaining.substring(0, endOfTweet);
                     }
                     int first = remaining.indexOf("#");
-                    String hashes = remaining.substring(first, remaining.length());
+                    String hashes = remaining.substring(first + 1, remaining.length());
                     if (theTweet.length() == 0) {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
@@ -167,26 +162,9 @@ class ClientHandler extends Thread {
                                 messages[firstNull].add(received.substring(6, received.length())); ////adds the message to the correct user's linked list
 
                             }
-                        } //else { //if no message array has been created
-                            //messages[0] = new LinkedList<String>(); //creates new linkedlist
-                            //messages[0].add(this.username); //adds username first thing
-                            //messages[0].add(received.substring(6, received.length())); //adds the linkedlist to the first entry in the array
-                            //System.out.println("message has been stored, messages array is not null");
-                        //}
-                        ttweetser.setMessages(messages); //updates the messages
-                        ttweetser.publish(received.substring(6, received.length()), hashes); //calls the publish method in the server
-                        HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
-                        String[] hashesArr = hashes.split("#");
-                        for (int i = 0; i < hashesArr.length; i++) {
-                            hashtags.putIfAbsent(hashesArr[i], new ArrayList<ClientHandler>()); //only inserts new key if it doesnt already exist
-                            // ArrayList<ClientHandler> usersToSend = hashtags.get(hashesArr[i]); //gets list of users to send to
-                            // if (usersToSend != null) {
-                            //     for (int u = 0; u < usersToSend.size(); u++) { //loops through these users and sends to them
-                            //         PrintWriter thisWriter = usersToSend.get(u).getWriter(); //gets the user's writer
-                            //         thisWriter.println(theTweet);
-                            //     }
-                            // }
                         }
+                        ttweetser.setMessages(messages); //updates the messages
+                        //ttweetser.publish(received.substring(6, received.length()), hashes, this.username); //calls the publish method in the server
                         writer.println("null");
                     }
 
@@ -261,6 +239,22 @@ class ClientHandler extends Thread {
                     ttweetser.setHashtags(hashtags); //sets with the changes made
                 } else if (received.equals("timeline")) {
                     //timeline logic
+                    //loop through the timelines array
+                    ArrayList<ArrayList<String>> timelines = ttweetser.getTimelines();
+                    boolean found = false;
+                    for (int i = 0; i < 5; i++) {
+                        ArrayList<String> toPrint = timelines.get(i);
+                        if (toPrint.get(0).equals(this.username)) { //if it equals the username
+                            String toSend = ""; //creates the string to send
+                            int count = 1;
+                            while (toPrint.get(count) != null) {
+                                toSend = toSend + toPrint.get(count) + "\n"; //adds the arraylist entry to the string
+                                count++;
+                            }
+                            writer.println(toSend); //sends the string to the server
+                            found = true;
+                        }
+                    }
                 } else if (received.equals("exit")) {
                     HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags(); //gets the hashtags
                     HashMap<String, ArrayList<String>> usersToSub = ttweetser.getUsersToSub(); //gets the users mapped with their subs
