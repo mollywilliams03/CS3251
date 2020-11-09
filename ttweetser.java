@@ -154,15 +154,15 @@ class ClientHandler extends Thread {
                                 messages[firstNull] = new LinkedList<String>(); //creates new linkedlist
                                 messages[firstNull].add(this.username); //adds username first thing
                                 messages[firstNull].add(received.substring(6, received.length())); ////adds the message to the correct user's linked list
+
                             }
-                        } else { //if no message array has been created
-                            messages[0] = new LinkedList<String>(); //creates new linkedlist
-                            messages[0].add(this.username); //adds username first thing
-                            messages[0].add(received.substring(6, received.length())); //adds the linkedlist to the first entry in the array
-                            System.out.println("message has been stored, messages array is not null");
-                        }
+                        } //else { //if no message array has been created
+                            //messages[0] = new LinkedList<String>(); //creates new linkedlist
+                            //messages[0].add(this.username); //adds username first thing
+                            //messages[0].add(received.substring(6, received.length())); //adds the linkedlist to the first entry in the array
+                            //System.out.println("message has been stored, messages array is not null");
+                        //}
                         ttweetser.setMessages(messages); //updates the messages
-                        System.out.println(messages[0]);
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         String[] hashesArr = hashes.split("#");
                         for (int i = 0; i < hashesArr.length; i++) {
@@ -175,6 +175,7 @@ class ClientHandler extends Thread {
                             //     }
                             // }
                         }
+                        writer.println("null");
                     }
 
                 } else if (received.length() > 13 && received.substring(0,13).equals("unsubscribe #")) {
@@ -273,7 +274,6 @@ class ClientHandler extends Thread {
                 } else if (received.equals("getusers")) {
                     writer.println(ttweetser.getUsers());
                 } else if (received.length() > 9 && received.substring(0,9).equals("gettweets")) {
-                    System.out.println("made it here");
                     LinkedList<String>[] messages = ttweetser.getMessages();
                     String user = received.substring(10, received.length()); //username of the user we want the tweets of
                     LinkedList<String> usersTweets = new LinkedList<>();
@@ -282,12 +282,11 @@ class ClientHandler extends Thread {
                             usersTweets = messages[i];
                         }
                     }
-                    if (usersTweets == null) {
+                    HashSet<String> currentUsers = ttweetser.getUsers();
+                    if (!currentUsers.contains(user)) {
                         writer.println("no user " + user + " in the system");
                     } else {
                         writer.println(usersTweets); //sends the linked list to the client
-                        //writer.println("test");
-                        //System.out.println("serverTest");
                     }
                 } else {
                     //invalid request logic
