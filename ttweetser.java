@@ -197,6 +197,7 @@ class ClientHandler extends Thread {
                     }
 
                     ttweetser.setHashtags(hashtags); //sets with the changes made
+                    writer.println("null");
                 } else if (received.length() > 11 && received.substring(0,11).equals("subscribe #")) {
                     //subscribe logic
                     //add them to the hashmap
