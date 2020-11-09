@@ -182,14 +182,8 @@ class ClientHandler extends Thread {
                                 messages[firstNull].add(received.substring(6, received.length())); ////adds the message to the correct user's linked list
 
                             }
-                        } //else { //if no message array has been created
-                            //messages[0] = new LinkedList<String>(); //creates new linkedlist
-                            //messages[0].add(this.username); //adds username first thing
-                            //messages[0].add(received.substring(6, received.length())); //adds the linkedlist to the first entry in the array
-                            //System.out.println("message has been stored, messages array is not null");
-                        //}
+                        }
                         ttweetser.setMessages(messages); //updates the messages
-                        //ttweetser.publish(received.substring(6, received.length()), hashes); //calls the publish method in the server
                         ttweetser.broadcast(hashes, received.substring(6, received.length()));
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         String[] hashesArr = hashes.split("#");

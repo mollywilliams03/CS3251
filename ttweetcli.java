@@ -33,48 +33,55 @@ public class ttweetcli {
 
                 InputStream in = socket.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
                 String line1 = reader.readLine();
                 System.out.println(line1);
                 if (line1.equals("username illegal, connection refused.")) {
-                    //System.out.println("username illegal, connection refused.");
                     System.exit(0);
                 }
-                String tosend = "";
+
+                //String line = "";
                 while (true) {
+                    String tosend = "";
+                    String line = "";
 
-                    if (scanner.hasNext()) {
-                        tosend = scanner.nextLine();
+                    if (System.in.available() > 0) {
+                        tosend = scanner.nextLine(); //get info to send to server
 
-                        writer.println(tosend);
+                        writer.println(tosend); //send input to server
                     }
 
 
-                    String line = reader.readLine();
+                    if (reader.ready()) {
+                        line = reader.readLine(); //read server response
+                        if (line != null) {
 
-                    if (line != null) {
-                        if (!line.equals("null")) {
-                            System.out.println(line);
+                            if (!line.equals("null")) {
+                                System.out.println(line);
+                            }
                         }
                     }
 
-                    // if (!line.equals("null")) {
-                    //     System.out.println(line);
-                    // }
+                    //if (line != null) {
+
+                    //    if (!line.equals("null")) {
+                    //        System.out.println(line);
+                    //    }
+                    //}
+
 
 
                     if (tosend != null && tosend.equals("exit")) {
                         System.out.println("bye bye");
                         socket.close();
-                        //System.out.println("Connection closed");
                         break;
                     }
-                    //break;
+
 
 
                 }
                 scanner.close();
-                //in.close();
-                //out.close();
+
             } catch (UnknownHostException ex) {
 
                 System.out.println("error: server ip invalid, connection refused.");
