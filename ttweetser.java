@@ -130,6 +130,7 @@ class ClientHandler extends Thread {
                     } else if (theTweet.length() > 150) {
                         writer.println("message length illegal, connection refused.");
                     } else {
+
                         //access hashmap of hashtags, send out to the users somehow
                         LinkedList<String>[] messages = ttweetser.getMessages(); //gets the messages
                         if (messages != null) {
@@ -158,6 +159,7 @@ class ClientHandler extends Thread {
                             messages[0].add(received.substring(6, received.length())); //adds the linkedlist to the first entry in the array
                         }
                         ttweetser.setMessages(messages); //updates the messages
+                        System.out.println(messages[0]);
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         String[] hashesArr = hashes.split("#");
                         for (int i = 0; i < hashesArr.length; i++) {
@@ -232,6 +234,9 @@ class ClientHandler extends Thread {
                         }
                         check = 0; //reset check
                         ttweetser.setUsersToSub(usersToSub);
+                        System.out.println(usersToSub);
+                        System.out.println(hashtags);
+                        writer.println("null");
                     } else {
                         writer.println("sub " + sub + " failed, already exists or exceeds 3 limitation");
                     }
@@ -284,7 +289,7 @@ class ClientHandler extends Thread {
                     //invalid request logic
                 }
 
-                
+
 
             } catch (IOException e) {
                 e.printStackTrace();
