@@ -186,6 +186,7 @@ class ClientHandler extends Thread {
                         ArrayList<ClientHandler> toRemoveFrom = hashtags.get(unhash);
                         toRemoveFrom.remove(this);
                     }
+                    HashMap<String, ArrayList<String>> usersToSub = ttweetser.getUsersToSub(); //gets the users mapped with their subs
                     ArrayList<String> values = usersToSub.get(username); //current users current subscriptions
                     for (int i = 0; i < values.size(); i++) {
                         if (values.get(i).equals(unhash)) {
@@ -245,6 +246,12 @@ class ClientHandler extends Thread {
                         ArrayList<ClientHandler> hashTagUsers = hashtags.get(values.get(i));
                         hashTagUsers.remove(this);
                         hashtags.replace(values.get(i), hashTagUsers);
+                    }
+                    LinkedList<String>[] messages = ttweetser.getMessages();
+                    for (int i = 0; i < messages.length; i++) { //remove user and their messages
+                        if (messages[i].getFirst().equals(username)) {
+                            messages[i] = null;
+                        }
                     }
 
                     this.socket.close();
