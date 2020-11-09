@@ -124,7 +124,7 @@ class ClientHandler extends Thread {
                 //received = in.readUTF();
                 System.out.println(this.socket);
                 received = reader.readLine();
-                System.out.println(received);
+                //System.out.println(received);
                 HashMap<String, ArrayList<String>> usersMap = ttweetser.getUsersToSub(); //gets the users mapped with their subs
                 usersMap.putIfAbsent(username, new ArrayList<String>());
                 ttweetser.setUsersToSub(usersMap);
@@ -178,7 +178,7 @@ class ClientHandler extends Thread {
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         String[] hashesArr = hashes.split("#");
                         for (int i = 0; i < hashesArr.length; i++) {
-                            hashtags.putIfAbsent(hashesArr[i], null); //only inserts new key if it doesnt already exist
+                            hashtags.putIfAbsent(hashesArr[i], new ArrayList<ClientHandler>()); //only inserts new key if it doesnt already exist
                             // ArrayList<ClientHandler> usersToSend = hashtags.get(hashesArr[i]); //gets list of users to send to
                             // if (usersToSend != null) {
                             //     for (int u = 0; u < usersToSend.size(); u++) { //loops through these users and sends to them
@@ -213,7 +213,7 @@ class ClientHandler extends Thread {
                     }
 
                     ttweetser.setHashtags(hashtags); //sets with the changes made
-                    writer.println("null");
+                    writer.println("operation success");
                 } else if (received.length() > 11 && received.substring(0,11).equals("subscribe #")) {
                     //subscribe logic
                     //add them to the hashmap
@@ -232,6 +232,7 @@ class ClientHandler extends Thread {
                         } else {
                             if (hashtags.containsKey(sub)) { //if its already in there
                                 ArrayList<ClientHandler> toAddTo = hashtags.get(sub); //gets hashtag's arraylist
+                                System.out.println(toAddTo);
                                 toAddTo.add(this); //adds the user to the arraylist
                             } else {
                                 ArrayList<ClientHandler> newHash = new ArrayList<ClientHandler>(); //creates new arraylist
@@ -253,7 +254,7 @@ class ClientHandler extends Thread {
                         ttweetser.setUsersToSub(usersToSub);
                         System.out.println(usersToSub);
                         System.out.println(hashtags);
-                        writer.println("null");
+                        writer.println("operation success");
                     } else {
                         writer.println("sub " + sub + " failed, already exists or exceeds 3 limitation");
                     }
@@ -303,7 +304,7 @@ class ClientHandler extends Thread {
                         writer.println(usersTweets); //sends the linked list to the client
                     }
                 } else {
-                    //invalid request logic
+                    writer.println("invalid request");
                 }
 
 
