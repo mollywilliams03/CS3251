@@ -30,6 +30,8 @@ public class ttweetser {
         currentUsers.remove(username);
     }
 
+    public static HashSet<String> getUsers() {return currentUsers; }
+
     public static void main(String args[]) throws Exception {
         if (args.length != 1) {
             System.out.println("error: args should contain <ServerPort>");
@@ -98,14 +100,17 @@ class ClientHandler extends Thread {
         PrintWriter writer = new PrintWriter(out, true);
         while (true) {
             try {
-                writer.println("whats up");
+                //writer.println("whats up");
                 //received = in.readUTF();
                 received = reader.readLine();
-                System.out.println("check Server");
+                System.out.println(received);
                 if (received.length() > 7 && received.substring(0,7).equals("tweet \"")) {
                     String remaining = received.substring(7, received.length());
-                    int endOfTweet = remaining.indexOf('"');
-                    String theTweet = remaining.substring(0,endOfTweet);
+                    int endOfTweet = remaining.indexOf("\"");
+                    String theTweet = "";
+                    if (endOfTweet != 0) {
+                        theTweet = remaining.substring(0, endOfTweet);
+                    }
                     int first = remaining.indexOf("#");
                     String hashes = remaining.substring(first,received.length());
                     if (theTweet.length() == 0) {
@@ -148,7 +153,7 @@ class ClientHandler extends Thread {
                     //add logic to have user info removed
                     break;
                 } else if (received.equals("getusers")) {
-                    //getusers logic
+                    writer.println(ttweetser.getUsers());
                 } else if (received.equals("gettweets")) {
                     //gettweets logic
                 } else {
