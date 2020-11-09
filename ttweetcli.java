@@ -58,11 +58,11 @@ public class ttweetcli {
                     //     System.out.println(line);
                     // }
 
-             
+
                     if (tosend.equals("exit")) {
                         System.out.println("bye bye");
                         socket.close();
-                        System.out.println("Connection closed");
+                        //System.out.println("Connection closed");
                         break;
                     }
                     //break;
