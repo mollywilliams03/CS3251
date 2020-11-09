@@ -150,7 +150,7 @@ class ClientHandler extends Thread {
                 } else if (received.length() > 13 && received.substring(0,13).equals("unsubscribe #")) {
                     //unsubscribe logic
                     //remove this user from the hashmap of hashtags
-                    String unhash = received.substring(14,received.length()); //gets the hashtag
+                    String unhash = received.substring(13,received.length()); //gets the hashtag
                     HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags(); //gets the hashtags
                     if (unhash.equals("ALL")) {
                         for (Map.Entry<String, ArrayList<ClientHandler>> set : hashtags.entrySet()) { //loops through the hashtags
@@ -166,6 +166,25 @@ class ClientHandler extends Thread {
                     //subscribe logic
                     //add them to the hashmap
                     //check if the hashtag exists, if it doesn't just add an entry to the hashmap, if it does then add to that entry
+                    String sub = received.substring(11,received.length()); //gets the hashtag
+                    HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags(); //gets the hashtags
+                    if (sub.equals("ALL")) {
+                        //subscirbe to all
+                        for (Map.Entry<String, ArrayList<ClientHandler>> set : hashtags.entrySet()) { //loops through the hashtags
+                            ArrayList<ClientHandler> toAddTo = set.getValue(); //gets the value of this particular set
+                            toAddTo.add(this); //add if its there
+                        }
+                    } else {
+                        if (hashtags.containsKey(sub)) { //if its already in there
+                            ArrayList<ClientHandler> toAddTo = hashtags.get(sub); //gets hashtag's arraylist
+                            toAddTo.add(this); //adds the user to the arraylist
+                        } else {
+                            ArrayList<ClientHandler> newHash = new ArrayList<ClientHandler>(); //creates new arraylist
+                            newHash.add(this); //adds this user to the arraylist
+                            hashtags.put(sub, newHash); //adds the hashtag with this user subscribed to it
+                        }
+                    }
+                    ttweetser.setHashtags(hashtags); //sets with the changes made
                 } else if (received.equals("timeline")) {
                     //timeline logic
                 } else if (received.equals("exit")) {
