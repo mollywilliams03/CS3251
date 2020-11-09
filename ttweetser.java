@@ -134,24 +134,24 @@ class ClientHandler extends Thread {
                         //access hashmap of hashtags, send out to the users somehow
                         LinkedList<String>[] messages = ttweetser.getMessages(); //gets the messages
                         if (messages != null) {
-                            boolean found = false;
-                            int foundHere = 0;
-                            int count = 0;
-                            while (messages[count] != null) { //loops through existing entries
-                                if (messages[count].peekFirst().equals(username)) { //if the username exists
-                                    messages[count].add(received.substring(6, received.length()));
+                            boolean found = false; //if user is found already existing
+                            int firstNull = 0; //where the first null entry is if the user doesnt exist
+                            boolean set = false; //if the firstnull variable has been set yet or not
+                            for (int h = 0; h < 5; h++) {
+                                if (messages[h].peekFirst().equals(username)) { //if the username exists
+                                    messages[h].add(received.substring(6, received.length()));
                                     found = true;
-                                    foundHere = count; //where it was found
                                     break;
                                 }
-                                count++;
-                            }
-                            if (found == false) { //if user does not exist
-                                if (foundHere < 4) {
-                                    messages[foundHere + 1] = new LinkedList<String>(); //creates new linkedlist
-                                    messages[foundHere + 1].add(this.username); //adds username first thing
-                                    messages[foundHere + 1].add(received.substring(6, received.length())); ////adds the message to the correct user's linked list
+                                if ((messages[h] == null) && (set == false)) { //gets the first null entry
+                                    firstNull = h; //where the null entry is
+                                    set = true; //the firstnull variable has been set
                                 }
+                            }
+                            if ((found == false) && (set == true)) { //if user does not exist, and there is a null spot in the array
+                                messages[firstNull] = new LinkedList<String>(); //creates new linkedlist
+                                messages[firstNull].add(this.username); //adds username first thing
+                                messages[firstNull].add(received.substring(6, received.length())); ////adds the message to the correct user's linked list
                             }
                         } else { //if no message array has been created
                             messages[0] = new LinkedList<String>(); //creates new linkedlist
