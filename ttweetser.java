@@ -151,7 +151,10 @@ class ClientHandler extends Thread {
                     String unhash = received.substring(14,received.length()); //gets the hashtag
                     HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags(); //gets the hashtags
                     if (unhash.equals("ALL")) {
-                        //UNSUB FROM ALL
+                        for (Map.Entry<String, ArrayList<ClientHandler>> set : hashtags.entrySet()) { //loops through the hashtags
+                            ArrayList<ClientHandler> toRemoveFrom = set.getValue(); //gets the value of this particular set
+                            toRemoveFrom.remove(this); //removes if its there
+                        }
                     } else {
                         ArrayList<ClientHandler> toRemoveFrom = hashtags.get(unhash);
                         toRemoveFrom.remove(this);
