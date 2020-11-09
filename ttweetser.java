@@ -63,7 +63,6 @@ public class ttweetser {
                     Thread newThread = new ClientHandler(socket, in, out, line);
                     newThread.start();
                 }
-                System.out.println(currentUsers);
 
             }
             catch (Exception e)
@@ -165,8 +164,20 @@ class ClientHandler extends Thread {
                     break;
                 } else if (received.equals("getusers")) {
                     writer.println(ttweetser.getUsers());
-                } else if (received.equals("gettweets")) {
-                    
+                } else if (received.length() > 9 && received.substring(0,9).equals("gettweets")) {
+                    LinkedList<String>[] messages = ttweetser.getMessages();
+                    String user = received.substring(10, received.length());
+                    LinkedList<String> usersTweets = new LinkedList<>();
+                    for (int i = 0; i <5; i++) { //goes through the messages array, finds the user's linked list
+                        if (messages[i].getFirst().equals(user)) {
+                            usersTweets = messages[i];
+                        }
+                    }
+                    if (usersTweets == null) {
+                        writer.println("no user " + user + " in the system");
+                    } else {
+                        writer.println(usersTweets);
+                    }
                 } else {
                     //invalid request logic
                 }
