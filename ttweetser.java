@@ -257,12 +257,14 @@ class ClientHandler extends Thread {
                         hashtags.replace(values.get(i), hashTagUsers);
                     }
                     LinkedList<String>[] messages = ttweetser.getMessages();
-                    for (int i = 0; i < messages.length; i++) { //remove user and their messages
-                        if (messages[i].getFirst().equals(username)) {
-                            messages[i] = null;
+                    if (messages != null) {
+                        for (int i = 0; i < messages.length; i++) { //remove user and their messages
+                            if ((messages[i] != null) && (messages[i].getFirst().equals(username))) {
+                                messages[i] = null;
+                            }
                         }
                     }
-
+                    ttweetser.setMessages(messages); //updates the messages
                     this.socket.close();
                     ttweetser.removeUser(username);
                     usersToSub.remove(username);

@@ -54,10 +54,14 @@ public class ttweetcli {
                     //} else if (line.equals("message length illegal, connection refused.")) {
                     //    System.out.println("message length illegal, connection refused.");
                     //}
-
-                    if (!line.equals("null")) {
-                        System.out.println(line);
+                    if (line != null) {
+                        if (!line.equals("null")) {
+                            System.out.println(line);
+                        }
                     }
+                    // if (!line.equals("null")) {
+                    //     System.out.println(line);
+                    // }
 
                     System.out.println("check Client");
                     //socket.close();
