@@ -130,7 +130,6 @@ class ClientHandler extends Thread {
                     } else if (theTweet.length() > 150) {
                         writer.println("message length illegal, connection refused.");
                     } else {
-
                         //access hashmap of hashtags, send out to the users somehow
                         LinkedList<String>[] messages = ttweetser.getMessages(); //gets the messages
                         if (messages != null) {
