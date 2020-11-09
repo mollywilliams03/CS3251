@@ -264,11 +264,12 @@ class ClientHandler extends Thread {
                 } else if (received.equals("getusers")) {
                     writer.println(ttweetser.getUsers());
                 } else if (received.length() > 9 && received.substring(0,9).equals("gettweets")) {
+                    System.out.println("made it here");
                     LinkedList<String>[] messages = ttweetser.getMessages();
                     String user = received.substring(10, received.length()); //username of the user we want the tweets of
                     LinkedList<String> usersTweets = new LinkedList<>();
                     for (int i = 0; i <5; i++) { //goes through the messages array, finds the user's linked list
-                        if (messages[i].getFirst().equals(user)) {
+                        if ((messages[i]!= null) && messages[i].getFirst().equals(user)) {
                             usersTweets = messages[i];
                         }
                     }
@@ -276,12 +277,14 @@ class ClientHandler extends Thread {
                         writer.println("no user " + user + " in the system");
                     } else {
                         writer.println(usersTweets); //sends the linked list to the client
+                        //writer.println("test");
+                        //System.out.println("serverTest");
                     }
                 } else {
                     //invalid request logic
                 }
 
-                break;
+                
 
             } catch (IOException e) {
                 e.printStackTrace();
