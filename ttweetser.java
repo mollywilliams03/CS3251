@@ -115,24 +115,40 @@ class ClientHandler extends Thread {
                         theTweet = remaining.substring(0, endOfTweet);
                     }
                     int first = remaining.indexOf("#");
-                    String hashes = remaining.substring(first, received.length());
+                    String hashes = remaining.substring(first, remaining.length());
                     if (theTweet.length() == 0) {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
                         writer.println("message length illegal, connection refused.");
                     } else {
-
-                        System.out.println("test");
                         //access hashmap of hashtags, send out to the users somehow
-                        // System.out.println(theTweet);
-                        LinkedList<String>[] messages = ttweetser.getMessages();
-                        for (int i = 0; i <5; i++) { //goes through the messages array, finds the user's linked list and adds to it
-                            if (messages[i].equals(username)) {
-                                messages[i].add(theTweet);
-                                break;
+                        LinkedList<String>[] messages = ttweetser.getMessages(); //gets the messages
+                        if (messages != null) {
+                            boolean found = false;
+                            int foundHere = 0;
+                            int count = 0;
+                            while (messages[count] != null) { //loops through existing entries
+                                if (messages[count].peekFirst().equals(username)) { //if the username exists
+                                    messages[count].add(received.substring(6, received.length()));
+                                    found = true;
+                                    foundHere = count; //where it was found
+                                    break;
+                                }
+                                count++;
                             }
+                            if (found == false) { //if user does not exist
+                                if (foundHere < 4) {
+                                    messages[foundHere + 1] = new LinkedList<String>(); //creates new linkedlist
+                                    messages[foundHere + 1].add(this.username); //adds username first thing
+                                    messages[foundHere + 1].add(received.substring(6, received.length())); ////adds the message to the correct user's linked list
+                                }
+                            }
+                        } else { //if no message array has been created
+                            messages[0] = new LinkedList<String>(); //creates new linkedlist
+                            messages[0].add(this.username); //adds username first thing
+                            messages[0].add(received.substring(6, received.length())); //adds the linkedlist to the first entry in the array
                         }
-                        ttweetser.setMessages(messages);
+                        ttweetser.setMessages(messages); //updates the messages
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         String[] hashesArr = hashes.split("#");
                         for (int i = 0; i < hashesArr.length; i++) {
