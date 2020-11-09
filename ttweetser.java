@@ -98,6 +98,9 @@ class ClientHandler extends Thread {
         String received, toReturn;
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         PrintWriter writer = new PrintWriter(out, true);
+        // public PrintWriter getWriter() { //get writer
+        //     return writer;
+        // }
         while (true) {
             try {
                 //writer.println("whats up");
@@ -112,7 +115,7 @@ class ClientHandler extends Thread {
                         theTweet = remaining.substring(0, endOfTweet);
                     }
                     int first = remaining.indexOf("#");
-                    String hashes = remaining.substring(first,received.length());
+                    String hashes = remaining.substring(first, received.length());
                     if (theTweet.length() == 0) {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
@@ -132,13 +135,21 @@ class ClientHandler extends Thread {
                         String[] hashesArr = hashes.split("#");
                         for (int i = 0; i < hashesArr.length; i++) {
                             hashtags.putIfAbsent(hashesArr[i], null); //only inserts new key if it doesnt already exist
-                            
+                            // ArrayList<ClientHandler> usersToSend = hashtags.get(hashesArr[i]); //gets list of users to send to
+                            // if (usersToSend != null) {
+                            //     for (int u = 0; u < usersToSend.size(); u++) { //loops through these users and sends to them
+                            //         PrintWriter thisWriter = usersToSend.get(u).getWriter(); //gets the user's writer
+                            //         thisWriter.println(theTweet);
+                            //     }
+                            // }
                         }
                     }
 
                 } else if (received.length() > 13 && received.substring(0,13).equals("unsubscribe #")) {
                     //unsubscribe logic
                     //remove this user from the hashmap of hashtags
+                    int i = received.indexOf("#");
+                    String hashes = received.substring(i,received.length());
                 } else if (received.length() > 11 && received.substring(0,11).equals("subscribe #")) {
                     //subscribe logic
                     //add them to the hashmap
@@ -155,7 +166,7 @@ class ClientHandler extends Thread {
                 } else if (received.equals("getusers")) {
                     writer.println(ttweetser.getUsers());
                 } else if (received.equals("gettweets")) {
-                    //gettweets logic
+                    
                 } else {
                     //invalid request logic
                 }
