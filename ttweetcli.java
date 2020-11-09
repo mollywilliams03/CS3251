@@ -33,13 +33,12 @@ public class ttweetcli {
 
                 InputStream in = socket.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                //String line1 = reader.readLine();
-                //if (line1.equals("username illegal, connection refused.")) {
-                //    System.out.println("username illegal, connection refused.");
-                //    System.exit(0);
-                //} else {
-                //    System.out.println("username legal, connection established.");
-                //}
+                String line1 = reader.readLine();
+                System.out.println(line1);
+                if (line1.equals("username illegal, connection refused.")) {
+                    //System.out.println("username illegal, connection refused.");
+                    System.exit(0);
+                }
 
                 while (true) {
                     String tosend = scanner.nextLine();
