@@ -6,7 +6,7 @@ import java.net.*;
 public class ttweetser {
 
     static HashSet<String> currentUsers = new HashSet<>();
-    static HashMap<String, ClientHandler> hashtags = new HashMap<String, ClientHandler>();
+    static HashMap<String, ArrayList<ClientHandler>> hashtags = new HashMap<String, ArrayList<ClientHandler>>();
     static LinkedList<String>[] messages = new LinkedList[5]; //stores all the messages
     static HashSet<ClientHandler> userObjects = new HashSet<>();
 
@@ -18,11 +18,11 @@ public class ttweetser {
         messages = mess;
     }
 
-    public static HashMap<String, ClientHandler> getHashtags() {
+    public static HashMap<String, ArrayList<ClientHandler>> getHashtags() {
         return hashtags;
     }
 
-    public static void setHashtags(HashMap<String, ClientHandler> hash) {
+    public static void setHashtags(HashMap<String, ArrayList<ClientHandler>> hash) {
         hashtags = hash;
     }
 
@@ -106,7 +106,8 @@ class ClientHandler extends Thread {
                     String remaining = received.substring(7, received.length());
                     int endOfTweet = remaining.indexOf('"');
                     String theTweet = remaining.substring(0,endOfTweet);
-                    // String hash = theTweet
+                    int first = remaining.indexOf("#");
+                    String hashes = remaining.substring(first,received.length());
                     if (theTweet.length() == 0) {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
@@ -122,8 +123,12 @@ class ClientHandler extends Thread {
                             }
                         }
                         ttweetser.setMessages(messages);
-                        HashMap<String, ClientHandler> hashtags = ttweetser.getHashtags();
-
+                        HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
+                        String[] hashesArr = hashes.split("#");
+                        for (int i = 0; i < hashesArr.length; i++) {
+                            hashtags.putIfAbsent(hashesArr[i], null); //only inserts new key if it doesnt already exist
+                            
+                        }
                     }
 
                 } else if (received.length() > 13 && received.substring(0,13).equals("unsubscribe #")) {
