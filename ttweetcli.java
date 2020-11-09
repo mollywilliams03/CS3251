@@ -33,29 +33,30 @@ public class ttweetcli {
 
                 InputStream in = socket.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                String line1 = reader.readLine();
-                    if (line1.equals("username illegal, connection refused.")) {
-                        System.out.println("username illegal, connection refused.");
-                        System.exit(0);
-                    } else {
-                        System.out.println("username legal, connection established.");
-                    }
+                //String line1 = reader.readLine();
+                //if (line1.equals("username illegal, connection refused.")) {
+                //    System.out.println("username illegal, connection refused.");
+                //    System.exit(0);
+                //} else {
+                //    System.out.println("username legal, connection established.");
+                //}
 
                 while (true) {
+                    String tosend = scanner.nextLine();
+
+                    writer.println(tosend);
                     String line = reader.readLine();
 
 
-                    if (line.equals("message format illegal.")) {
-                        System.out.println("message format illegal.");
-                    } else if (line.equals("message length illegal, connection refused.")) {
-                        System.out.println("message length illegal, connection refused.");
-                    }
+                    //if (line.equals("message format illegal.")) {
+                    //    System.out.println("message format illegal.");
+                    //} else if (line.equals("message length illegal, connection refused.")) {
+                    //    System.out.println("message length illegal, connection refused.");
+                    //}
 
 
                     System.out.println(line);
-                    String tosend = scanner.nextLine();
-                    //out.writeUTF(tosend);
-                    writer.println(tosend);
+
                     System.out.println("check Client");
                     //socket.close();
                     if (tosend.equals("exit")) {
