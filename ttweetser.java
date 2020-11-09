@@ -38,6 +38,17 @@ public class ttweetser {
 
     public static void setUsersToSub(HashMap<String, ArrayList<String>> subs) { usersToSub = subs; }
 
+    public static void publish(String message, String hashtagToSend) {
+        ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
+        if (list != null) {
+            for (int i = 0; i < list.size(); i++) {
+                ClientHandler obj = list.get(i); //gets the client object to publish to
+                PrintWriter writer = new PrintWriter(obj.out, true); //creates the specific writer
+                writer.println(message);
+            }
+        }
+    }
+
     public static void main(String args[]) throws Exception {
         if (args.length != 1) {
             System.out.println("error: args should contain <ServerPort>");
@@ -111,6 +122,7 @@ class ClientHandler extends Thread {
             try {
                 //writer.println("whats up");
                 //received = in.readUTF();
+                System.out.println(this.socket);
                 received = reader.readLine();
                 System.out.println(received);
                 HashMap<String, ArrayList<String>> usersMap = ttweetser.getUsersToSub(); //gets the users mapped with their subs
@@ -162,6 +174,7 @@ class ClientHandler extends Thread {
                             //System.out.println("message has been stored, messages array is not null");
                         //}
                         ttweetser.setMessages(messages); //updates the messages
+                        ttweetser.publish(received.substring(6, received.length()), hashes); //calls the publish method in the server
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         String[] hashesArr = hashes.split("#");
                         for (int i = 0; i < hashesArr.length; i++) {
