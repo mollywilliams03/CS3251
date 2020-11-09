@@ -44,6 +44,13 @@ public class ttweetser {
         return timelines;
     }
 
+    public static void broadcast(String hashtagToSend, String message)  {
+        // send message to all connected users
+        ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
+        for ( ClientHandler c : list )
+           c.sendMessage(message);
+    }
+
     public static void main(String args[]) throws Exception {
         if (args.length != 1) {
             System.out.println("error: args should contain <ServerPort>");
@@ -97,6 +104,7 @@ class ClientHandler extends Thread {
     final OutputStream out;
     final Socket socket;
     final String username;
+    PrintWriter writer;
 
 
     public ClientHandler(Socket socket, InputStream in, OutputStream out, String username) {
@@ -104,12 +112,19 @@ class ClientHandler extends Thread {
         this.in = in;
         this.out = out;
         this.username = username;
+        writer = new PrintWriter(out, true);
+    }
+
+
+
+    public void sendMessage(String  msg)  {
+        writer.println(msg);
     }
 
     public void run() {
         String received, toReturn;
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        PrintWriter writer = new PrintWriter(out, true);
+        //PrintWriter writer = new PrintWriter(out, true);
         // public PrintWriter getWriter() { //get writer
         //     return writer;
         // }
@@ -162,6 +177,23 @@ class ClientHandler extends Thread {
                                 messages[firstNull].add(received.substring(6, received.length())); ////adds the message to the correct user's linked list
 
                             }
+<<<<<<< HEAD
+=======
+                        }
+                        ttweetser.setMessages(messages); //updates the messages
+                        ttweetser.broadcast(hashes, received.substring(6, received.length()));
+                        HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
+                        String[] hashesArr = hashes.split("#");
+                        for (int i = 0; i < hashesArr.length; i++) {
+                            hashtags.putIfAbsent(hashesArr[i], new ArrayList<ClientHandler>()); //only inserts new key if it doesnt already exist
+                            // ArrayList<ClientHandler> usersToSend = hashtags.get(hashesArr[i]); //gets list of users to send to
+                            // if (usersToSend != null) {
+                            //     for (int u = 0; u < usersToSend.size(); u++) { //loops through these users and sends to them
+                            //         PrintWriter thisWriter = usersToSend.get(u).getWriter(); //gets the user's writer
+                            //         thisWriter.println(theTweet);
+                            //     }
+                            // }
+>>>>>>> d78553d929e9176f895f1eb6097d5cabe3ea927b
                         }
                         ttweetser.setMessages(messages); //updates the messages
                         //ttweetser.publish(received.substring(6, received.length()), hashes, this.username); //calls the publish method in the server

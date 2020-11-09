@@ -33,35 +33,71 @@ public class ttweetcli {
 
                 InputStream in = socket.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
                 String line1 = reader.readLine();
                 System.out.println(line1);
                 if (line1.equals("username illegal, connection refused.")) {
-                    //System.out.println("username illegal, connection refused.");
                     System.exit(0);
                 }
 
+                //String line = "";
                 while (true) {
+<<<<<<< HEAD
                     String tosend = scanner.nextLine(); //gets the input from terminal
 
                     writer.println(tosend); //sends input to server
 
                     String line = reader.readLine(); //reads the stuff from the server
+=======
+                    String tosend = "";
+                    String line = "";
 
-                    if (line != null) {
-                        if (!line.equals("null")) {
-                            System.out.println(line);
+                    if (System.in.available() > 0) {
+                        tosend = scanner.nextLine(); //get info to send to server
+
+                        writer.println(tosend); //send input to server
+                    }
+
+
+                    if (reader.ready()) {
+                        line = reader.readLine(); //read server response
+                        if (line != null) {
+>>>>>>> d78553d929e9176f895f1eb6097d5cabe3ea927b
+
+                            if (!line.equals("null")) {
+                                System.out.println(line);
+                            }
                         }
+<<<<<<< HEAD
                     }           
                     if (tosend.equals("exit")) {
+=======
+                    }
+
+                    //if (line != null) {
+
+                    //    if (!line.equals("null")) {
+                    //        System.out.println(line);
+                    //    }
+                    //}
+
+
+
+                    if (tosend != null && tosend.equals("exit")) {
+>>>>>>> d78553d929e9176f895f1eb6097d5cabe3ea927b
                         System.out.println("bye bye");
                         socket.close();
-                        System.out.println("Connection closed");
                         break;
                     }
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> d78553d929e9176f895f1eb6097d5cabe3ea927b
                 }
                 scanner.close();
-                //in.close();
-                //out.close();
+
             } catch (UnknownHostException ex) {
 
                 System.out.println("error: server ip invalid, connection refused.");
