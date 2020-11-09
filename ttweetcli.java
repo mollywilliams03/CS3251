@@ -41,11 +41,13 @@ public class ttweetcli {
                 }
 
                 while (true) {
+
+
                     String tosend = scanner.nextLine();
 
                     writer.println(tosend);
-                    String line = reader.readLine();
 
+                    String line = reader.readLine();
 
                     //if (line.equals("message format illegal.")) {
                     //    System.out.println("message format illegal.");
