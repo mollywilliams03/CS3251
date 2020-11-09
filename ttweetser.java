@@ -49,6 +49,13 @@ public class ttweetser {
         }
     }
 
+    public static void broadcast(String hashtagToSend, String message)  {
+        // send message to all connected users
+        ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
+        for ( ClientHandler c : list )
+           c.sendMessage(message);
+    }
+
     public static void main(String args[]) throws Exception {
         if (args.length != 1) {
             System.out.println("error: args should contain <ServerPort>");
@@ -102,6 +109,7 @@ class ClientHandler extends Thread {
     final OutputStream out;
     final Socket socket;
     final String username;
+    PrintWriter writer;
 
 
     public ClientHandler(Socket socket, InputStream in, OutputStream out, String username) {
@@ -109,12 +117,19 @@ class ClientHandler extends Thread {
         this.in = in;
         this.out = out;
         this.username = username;
+        writer = new PrintWriter(out, true);
+    }
+
+
+
+    public void sendMessage(String  msg)  {
+        writer.println(msg);
     }
 
     public void run() {
         String received, toReturn;
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        PrintWriter writer = new PrintWriter(out, true);
+        //PrintWriter writer = new PrintWriter(out, true);
         // public PrintWriter getWriter() { //get writer
         //     return writer;
         // }
@@ -136,7 +151,7 @@ class ClientHandler extends Thread {
                         theTweet = remaining.substring(0, endOfTweet);
                     }
                     int first = remaining.indexOf("#");
-                    String hashes = remaining.substring(first, remaining.length());
+                    String hashes = remaining.substring(first + 1, remaining.length());
                     if (theTweet.length() == 0) {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
@@ -174,7 +189,8 @@ class ClientHandler extends Thread {
                             //System.out.println("message has been stored, messages array is not null");
                         //}
                         ttweetser.setMessages(messages); //updates the messages
-                        ttweetser.publish(received.substring(6, received.length()), hashes); //calls the publish method in the server
+                        //ttweetser.publish(received.substring(6, received.length()), hashes); //calls the publish method in the server
+                        ttweetser.broadcast(hashes, received.substring(6, received.length()));
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         String[] hashesArr = hashes.split("#");
                         for (int i = 0; i < hashesArr.length; i++) {

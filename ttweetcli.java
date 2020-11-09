@@ -39,13 +39,15 @@ public class ttweetcli {
                     //System.out.println("username illegal, connection refused.");
                     System.exit(0);
                 }
-
+                String tosend = "";
                 while (true) {
 
+                    if (scanner.hasNext()) {
+                        tosend = scanner.nextLine();
 
-                    String tosend = scanner.nextLine();
+                        writer.println(tosend);
+                    }
 
-                    writer.println(tosend);
 
                     String line = reader.readLine();
 
@@ -54,12 +56,13 @@ public class ttweetcli {
                             System.out.println(line);
                         }
                     }
+
                     // if (!line.equals("null")) {
                     //     System.out.println(line);
                     // }
 
 
-                    if (tosend.equals("exit")) {
+                    if (tosend != null && tosend.equals("exit")) {
                         System.out.println("bye bye");
                         socket.close();
                         //System.out.println("Connection closed");
