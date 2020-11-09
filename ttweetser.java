@@ -138,10 +138,12 @@ class ClientHandler extends Thread {
                             int firstNull = 0; //where the first null entry is if the user doesnt exist
                             boolean set = false; //if the firstnull variable has been set yet or not
                             for (int h = 0; h < 5; h++) {
-                                if (messages[h].peekFirst().equals(username)) { //if the username exists
+                                if (messages[h] != null) {
+                                    if (messages[h].peekFirst().equals(username)) { //if the username exists
                                     messages[h].add(received.substring(6, received.length()));
                                     found = true;
                                     break;
+                                    } 
                                 }
                                 if ((messages[h] == null) && (set == false)) { //gets the first null entry
                                     firstNull = h; //where the null entry is
@@ -157,6 +159,7 @@ class ClientHandler extends Thread {
                             messages[0] = new LinkedList<String>(); //creates new linkedlist
                             messages[0].add(this.username); //adds username first thing
                             messages[0].add(received.substring(6, received.length())); //adds the linkedlist to the first entry in the array
+                            System.out.println("message has been stored, messages array is not null");
                         }
                         ttweetser.setMessages(messages); //updates the messages
                         System.out.println(messages[0]);
