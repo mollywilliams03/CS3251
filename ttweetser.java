@@ -59,6 +59,7 @@ public class ttweetser {
                 if (currentUsers.contains(line)) {
                     writer.println("username illegal, connection refused.");
                 } else {
+                    writer.println("username legal, connection established.");
                     currentUsers.add(line);
                     Thread newThread = new ClientHandler(socket, in, out, line);
                     newThread.start();
@@ -120,6 +121,8 @@ class ClientHandler extends Thread {
                     } else if (theTweet.length() > 150) {
                         writer.println("message length illegal, connection refused.");
                     } else {
+
+                        System.out.println("test");
                         //access hashmap of hashtags, send out to the users somehow
                         // System.out.println(theTweet);
                         LinkedList<String>[] messages = ttweetser.getMessages();
@@ -195,7 +198,7 @@ class ClientHandler extends Thread {
                     writer.println(ttweetser.getUsers());
                 } else if (received.length() > 9 && received.substring(0,9).equals("gettweets")) {
                     LinkedList<String>[] messages = ttweetser.getMessages();
-                    String user = received.substring(10, received.length());
+                    String user = received.substring(10, received.length()); //username of the user we want the tweets of
                     LinkedList<String> usersTweets = new LinkedList<>();
                     for (int i = 0; i <5; i++) { //goes through the messages array, finds the user's linked list
                         if (messages[i].getFirst().equals(user)) {
@@ -205,7 +208,7 @@ class ClientHandler extends Thread {
                     if (usersTweets == null) {
                         writer.println("no user " + user + " in the system");
                     } else {
-                        writer.println(usersTweets);
+                        writer.println(usersTweets); //sends the linked list to the client
                     }
                 } else {
                     //invalid request logic
