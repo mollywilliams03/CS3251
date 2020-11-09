@@ -143,8 +143,15 @@ class ClientHandler extends Thread {
                 } else if (received.length() > 13 && received.substring(0,13).equals("unsubscribe #")) {
                     //unsubscribe logic
                     //remove this user from the hashmap of hashtags
-                    int i = received.indexOf("#");
-                    String hashes = received.substring(i,received.length());
+                    String unhash = received.substring(14,received.length()); //gets the hashtag
+                    HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags(); //gets the hashtags
+                    if (unhash.equals("ALL")) {
+                        //UNSUB FROM ALL
+                    } else {
+                        ArrayList<ClientHandler> toRemoveFrom = hashtags.get(unhash);
+                        toRemoveFrom.remove(this);
+                    }
+                    ttweetser.setHashtags(hashtags); //sets with the changes made
                 } else if (received.length() > 11 && received.substring(0,11).equals("subscribe #")) {
                     //subscribe logic
                     //add them to the hashmap
