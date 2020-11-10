@@ -39,7 +39,7 @@ public class ttweetser {
 
     public static void setUsersToSub(HashMap<String, ArrayList<String>> subs) { usersToSub = subs; }
 
-    public static ArrayList<ArrayList<String>> getTimelines() { 
+    public static ArrayList<ArrayList<String>> getTimelines() {
         return timelines;
     }
 
@@ -47,6 +47,7 @@ public class ttweetser {
         // send message to all connected users
         ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
         for ( ClientHandler c : list ) {
+<<<<<<< HEAD
            c.sendMessage(message);
            //add to the timeline data structure
             //boolean found = false;
@@ -68,6 +69,37 @@ public class ttweetser {
             //    String together = sendingUser + ": " + message; //makes the string
             //    toAdd.add(together); //add the message
             //    timelines.set(firstNull, toAdd);
+=======
+            c.sendMessage(message);
+            //add to the timeline data structure
+            boolean found = false;
+             int firstNull = 0;
+            boolean set = false;
+            if (timelines != null) {
+                for (int d = 0; d < 5; d++) {
+                    if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
+                        timelines.get(d).add(message); //add this to the correct arraylist
+                        found = true;
+                    }
+                    if ((timelines.get(d) == null) && (set == false)) {
+                        firstNull = d;
+                        set = true;
+                    }
+                }
+                if (found == false) { //if it was never found
+                    ArrayList<String> toAdd = new ArrayList<String>();
+                    toAdd.add(c.username); //add the username first thing
+                    String together = sendingUser + ": " + message + "\n"; //makes the string
+                    toAdd.add(together); //add the message
+                    timelines.set(firstNull, toAdd);
+                }
+            } else {
+                ArrayList<String> toAdd = new ArrayList<String>();
+                toAdd.add(c.username); //add the username first thing
+                String together = sendingUser + ": " + message + "\n"; //makes the string
+                toAdd.add(together); //add the message
+                timelines.set(0, toAdd);
+>>>>>>> 0f71314a3b7dc81ff0d6794097967a0838c9c3b6
             }
         }
 
@@ -112,7 +144,7 @@ public class ttweetser {
             }
 
 
-        //ArrayList<String> messages = new ArrayList<>();
+            //ArrayList<String> messages = new ArrayList<>();
         }
     }
 }
@@ -167,8 +199,12 @@ class ClientHandler extends Thread {
                     }
                     remaining = remaining.substring(endOfTweet, remaining.length());
                     int first = remaining.indexOf("#");
+<<<<<<< HEAD
 
 
+=======
+                    String hashes = remaining.substring(first, remaining.length());
+>>>>>>> 0f71314a3b7dc81ff0d6794097967a0838c9c3b6
                     if (theTweet.length() == 0) {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
@@ -178,48 +214,51 @@ class ClientHandler extends Thread {
                         //access hashmap of hashtags, send out to the users somehow
                         ArrayList<ArrayList<String>> messages = ttweetser.getMessages(); //gets the messages
                         //if (messages != null) {
-                            boolean found = false; //if user is found already existing
-                            int firstNull = -1; //where the first null entry is if the user doesnt exist
-                            boolean set = false; //if the firstnull variable has been set yet or not
-                            for (int h = 0; h < 5; h++) {
-                                if (messages.get(h) != null) {
-                                    if (messages.get(h).get(0).equals(username)) { //if the username exists
+                        boolean found = false; //if user is found already existing
+                        int firstNull = -1; //where the first null entry is if the user doesnt exist
+                        boolean set = false; //if the firstnull variable has been set yet or not
+                        for (int h = 0; h < 5; h++) {
+                            if (messages.get(h) != null) {
+                                if (messages.get(h).get(0).equals(username)) { //if the username exists
                                     messages.get(h).add(received.substring(6, received.length()));
                                     found = true;
                                     break;
-                                    } 
-                                }
-                                if ((messages.get(h) == null) && (set == false)) { //gets the first null entry
-                                    firstNull = h; //where the null entry is
-                                    set = true; //the firstnull variable has been set
                                 }
                             }
+<<<<<<< HEAD
                             if ((found == false) && (set == true)) { //if user does not exist, and there is a null spot in the array
                                 messages.set(firstNull, new ArrayList<String>()); //creates new arraylist
                                 messages.get(firstNull).add(this.username); //adds username first thing
                                 messages.get(firstNull).add(received.substring(6, received.length())); ////adds the message to the correct user's
                                 //System.out.println(messages.get(firstNull));
 
+=======
+                            if ((messages.get(h) == null) && (set == false)) { //gets the first null entry
+                                firstNull = h; //where the null entry is
+                                set = true; //the firstnull variable has been set
+>>>>>>> 0f71314a3b7dc81ff0d6794097967a0838c9c3b6
                             }
-                       // }
+                        }
+                        if ((found == false) && (set == true)) { //if user does not exist, and there is a null spot in the array
+                            messages.set(firstNull, new ArrayList<String>()); //creates new arraylist
+                            messages.get(firstNull).add(this.username); //adds username first thing
+                            messages.get(firstNull).add(received.substring(6, received.length())); ////adds the message to the correct user's
+                            System.out.println(messages.get(firstNull));
+                        }
                         ttweetser.setMessages(messages); //updates the messages
                         String[] hashesArr = hashes.split("#");
+<<<<<<< HEAD
                         for (String hash: hashesArr) {
                             ttweetser.broadcast(hash, received.substring(6, received.length()), this.username);
                         }
+=======
+                        ttweetser.broadcast(hashes, received.substring(6, received.length()), this.username);
+>>>>>>> 0f71314a3b7dc81ff0d6794097967a0838c9c3b6
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         for (int i = 0; i < hashesArr.length; i++) {
-                            hashtags.putIfAbsent(hashesArr[i], new ArrayList<ClientHandler>()); //only inserts new key if it doesnt already exist
-                            // ArrayList<ClientHandler> usersToSend = hashtags.get(hashesArr[i]); //gets list of users to send to
-                            // if (usersToSend != null) {
-                            //     for (int u = 0; u < usersToSend.size(); u++) { //loops through these users and sends to them
-                            //         PrintWriter thisWriter = usersToSend.get(u).getWriter(); //gets the user's writer
-                            //         thisWriter.println(theTweet);
-                            //     }
-                            // }
+                            hashtags.putIfAbsent(hashesArr[i], new ArrayList<ClientHandler>()); //only inserts new key if it doesnt already exists
                         }
                         ttweetser.setMessages(messages); //updates the messages
-                        //ttweetser.publish(received.substring(6, received.length()), hashes, this.username); //calls the publish method in the server
                         writer.println("null");
                     }
 
@@ -297,18 +336,22 @@ class ClientHandler extends Thread {
                     //loop through the timelines array
                     ArrayList<ArrayList<String>> timelines = ttweetser.getTimelines();
                     boolean found = false;
-                    for (int i = 0; i < 5; i++) {
-                        ArrayList<String> toPrint = timelines.get(i);
-                        if (toPrint.get(0).equals(this.username)) { //if it equals the username
-                            String toSend = ""; //creates the string to send
-                            int count = 1;
-                            while (toPrint.get(count) != null) {
-                                toSend = toSend + toPrint.get(count) + "\n"; //adds the arraylist entry to the string
-                                count++;
+                    if (timelines != null) {
+                        for (int i = 0; i < timelines.size(); i++) {
+                            ArrayList<String> toPrint = timelines.get(i);
+                            if (toPrint.get(0).equals(this.username)) { //if it equals the username
+                                String toSend = ""; //creates the string to send
+                                int count = 1;
+                                while (toPrint.get(count) != null) {
+                                    toSend = toSend + toPrint.get(count) + "\n"; //adds the arraylist entry to the string
+                                    count++;
+                                }
+                                writer.println(toSend); //sends the string to the server
+                                found = true;
                             }
-                            writer.println(toSend); //sends the string to the server
-                            found = true;
                         }
+                    } else {
+                        writer.println("No posts yet!");
                     }
                 } else if (received.equals("exit")) {
                     HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags(); //gets the hashtags

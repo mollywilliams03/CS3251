@@ -23,64 +23,64 @@ public class ttweetcli {
             }
         }
         try
-            {
-                Scanner scanner = new Scanner(System.in);
-                Socket socket = new Socket(serverIP, serverPort);
+        {
+            Scanner scanner = new Scanner(System.in);
+            Socket socket = new Socket(serverIP, serverPort);
 
-                OutputStream out = socket.getOutputStream();
+            OutputStream out = socket.getOutputStream();
 
-                PrintWriter writer = new PrintWriter(out, true);
-                writer.println(username);
+            PrintWriter writer = new PrintWriter(out, true);
+            writer.println(username);
 
-                InputStream in = socket.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            InputStream in = socket.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-                String line1 = reader.readLine();
-                System.out.println(line1);
-                if (line1.equals("username illegal, connection refused.")) {
-                    System.exit(0);
+            String line1 = reader.readLine();
+            System.out.println(line1);
+            if (line1.equals("username illegal, connection refused.")) {
+                System.exit(0);
+            }
+
+            //String line = "";
+            while (true) {
+                String tosend = "";
+                String line = "";
+
+                if (System.in.available() > 0) {
+                    tosend = scanner.nextLine(); //get info to send to server
+
+                    writer.println(tosend); //send input to server
                 }
 
-                //String line = "";
-                while (true) {
-                    String tosend = "";
-                    String line = "";
 
-                    if (System.in.available() > 0) {
-                        tosend = scanner.nextLine(); //get info to send to server
+                if (reader.ready()) {
+                    line = reader.readLine(); //read server response
+                    if (line != null) {
 
-                        writer.println(tosend); //send input to server
-                    }
-
-
-                    if (reader.ready()) {
-                        line = reader.readLine(); //read server response
-                        if (line != null) {
-
-                            if (!line.equals("null")) {
-                                System.out.println(line);
-                            }
+                        if (!line.equals("null")) {
+                            System.out.println(line);
                         }
                     }
-
-
-                    if (tosend != null && tosend.equals("exit")) {
-                        System.out.println("bye bye");
-                        socket.close();
-                        break;
-                    }
                 }
-                scanner.close();
 
-            } catch (UnknownHostException ex) {
 
-                System.out.println("error: server ip invalid, connection refused.");
-                System.exit(0);
+                if (tosend != null && tosend.equals("exit")) {
+                    System.out.println("bye bye");
+                    socket.close();
+                    break;
+                }
+            }
+            scanner.close();
 
-            } catch (IOException ex) { //check for valid serverport
+        } catch (UnknownHostException ex) {
 
-               System.out.println("Server not found");
-                System.exit(0);
-           }
+            System.out.println("error: server ip invalid, connection refused.");
+            System.exit(0);
+
+        } catch (IOException ex) { //check for valid serverport
+
+            System.out.println("Server not found");
+            System.exit(0);
+        }
     }
 }
