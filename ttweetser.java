@@ -49,34 +49,34 @@ public class ttweetser {
         for (ClientHandler c : list) {
             c.sendMessage(message);
             //add to the timeline data structure
-//            boolean found = false;
-//            int firstNull = 0;
-//            boolean set = false;
-//            if (timelines != null) {
-//                for (int d = 0; d < 5; d++) {
-//                    if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
-//                        timelines.get(d).add(message); //add this to the correct arraylist
-//                        found = true;
-//                    }
-//                    if ((timelines.get(d) == null) && (set == false)) {
-//                        firstNull = d;
-//                        set = true;
-//                    }
-//                }
-//                if (found == false) { //if it was never found
-//                    ArrayList<String> toAdd = new ArrayList<String>();
-//                    toAdd.add(c.username); //add the username first thing
-//                    String together = sendingUser + ": " + message + "\n"; //makes the string
-//                    toAdd.add(together); //add the message
-//                    timelines.set(firstNull, toAdd);
-//                }
-//            } else {
-//                ArrayList<String> toAdd = new ArrayList<String>();
-//                toAdd.add(c.username); //add the username first thing
-//                String together = sendingUser + ": " + message + "\n"; //makes the string
-//                toAdd.add(together); //add the message
-//                timelines.set(0, toAdd);
-//            }
+            boolean found = false;
+            int firstNull = 0;
+            boolean set = false;
+            if (timelines != null) { //if it has been created
+                for (int d = 0; d < timelines.size(); d++) {
+                    if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
+                        timelines.get(d).add(message); //add this to the correct arraylist
+                        found = true;
+                    }
+                    if ((timelines.get(d) == null) && (set == false)) {
+                        firstNull = d;
+                        set = true;
+                    }
+                }
+                if (found == false) { //if it was never found
+                    ArrayList<String> toAdd = new ArrayList<String>();
+                    toAdd.add(c.username); //add the username first thing
+                    String together = sendingUser + ": " + message + "\n"; //makes the string
+                    toAdd.add(together); //add the message
+                    timelines.set(firstNull, toAdd);
+                }
+            } else {
+                ArrayList<String> toAdd = new ArrayList<String>();
+                toAdd.add(c.username); //add the username first thing
+                String together = sendingUser + ": " + message + "\n"; //makes the string
+                toAdd.add(together); //add the message
+                timelines.set(0, toAdd);
+            }
         }
     }
 
@@ -298,16 +298,21 @@ class ClientHandler extends Thread {
                     if (timelines != null) {
                         for (int i = 0; i < timelines.size(); i++) {
                             ArrayList<String> toPrint = timelines.get(i);
-                            if (toPrint.get(0).equals(this.username)) { //if it equals the username
-                                String toSend = ""; //creates the string to send
-                                int count = 1;
-                                while (toPrint.get(count) != null) {
-                                    toSend = toSend + toPrint.get(count) + "\n"; //adds the arraylist entry to the string
-                                    count++;
+                            if (toPrint != null) {
+                                if (toPrint.get(0).equals(this.username)) { //if it equals the username
+                                    String toSend = ""; //creates the string to send
+                                    int count = 1;
+                                    while (toPrint.get(count) != null) {
+                                        toSend = toSend + toPrint.get(count); //adds the arraylist entry to the string
+                                        count++;
+                                    }
+                                    writer.println(toSend); //sends the string to the server
+                                    found = true;
                                 }
-                                writer.println(toSend); //sends the string to the server
-                                found = true;
                             }
+                        }
+                        if (found == false) {
+                            writer.println("You haven't been able to recieve posts yet!");
                         }
                     } else {
                         writer.println("No posts yet!");
