@@ -8,6 +8,9 @@ public class ttweetcli {
         if (args.length != 3) { //invalid number of args
             System.out.println("error: args should contain <ServerIP> <ServerPort> <Username>");
             System.exit(0);
+        } else if ((Integer.parseInt(args[1]) < 1024) || (Integer.parseInt(args[1]) > 65535)) {
+            System.out.println("error: server port invalid, connection refused.");
+            System.exit(0);
         }
 
         String serverIP = args[0];
