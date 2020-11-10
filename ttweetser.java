@@ -7,14 +7,14 @@ public class ttweetser {
 
     static HashSet<String> currentUsers = new HashSet<>();
     static HashMap<String, ArrayList<ClientHandler>> hashtags = new HashMap<String, ArrayList<ClientHandler>>(); //maps hashtags to people subscribed to them
-    static LinkedList<String>[] messages = new LinkedList[5]; //stores all the messages
+    static ArrayList<ArrayList<String>> messages = new ArrayList<>(Arrays.asList(null, null, null, null, null)); //stores all the messages
     static HashMap<String, ArrayList<String>> usersToSub = new HashMap<>(); //maps users to their subscriptions
 
-    public static LinkedList<String>[] getMessages() {
+    public static ArrayList<ArrayList<String>> getMessages() {
         return messages;
     }
 
-    public static void setMessages(LinkedList<String>[] mess) {
+    public static void setMessages(ArrayList<ArrayList<String>> mess) {
         messages = mess;
     }
 
@@ -158,31 +158,32 @@ class ClientHandler extends Thread {
                         writer.println("message length illegal, connection refused.");
                     } else {
                         //access hashmap of hashtags, send out to the users somehow
-                        LinkedList<String>[] messages = ttweetser.getMessages(); //gets the messages
-                        if (messages != null) {
+                        ArrayList<ArrayList<String>> messages = ttweetser.getMessages(); //gets the messages
+                        //if (messages != null) {
                             boolean found = false; //if user is found already existing
-                            int firstNull = 0; //where the first null entry is if the user doesnt exist
+                            int firstNull = -1; //where the first null entry is if the user doesnt exist
                             boolean set = false; //if the firstnull variable has been set yet or not
                             for (int h = 0; h < 5; h++) {
-                                if (messages[h] != null) {
-                                    if (messages[h].peekFirst().equals(username)) { //if the username exists
-                                    messages[h].add(received.substring(6, received.length()));
+                                if (messages.get(h) != null) {
+                                    if (messages.get(h).get(0).equals(username)) { //if the username exists
+                                    messages.get(h).add(received.substring(6, received.length()));
                                     found = true;
                                     break;
                                     } 
                                 }
-                                if ((messages[h] == null) && (set == false)) { //gets the first null entry
+                                if ((messages.get(h) == null) && (set == false)) { //gets the first null entry
                                     firstNull = h; //where the null entry is
                                     set = true; //the firstnull variable has been set
                                 }
                             }
                             if ((found == false) && (set == true)) { //if user does not exist, and there is a null spot in the array
-                                messages[firstNull] = new LinkedList<String>(); //creates new linkedlist
-                                messages[firstNull].add(this.username); //adds username first thing
-                                messages[firstNull].add(received.substring(6, received.length())); ////adds the message to the correct user's linked list
+                                messages.set(firstNull, new ArrayList<String>()); //creates new arraylist
+                                messages.get(firstNull).add(this.username); //adds username first thing
+                                messages.get(firstNull).add(received.substring(6, received.length())); ////adds the message to the correct user's
+                                System.out.println(messages.get(firstNull));
 
                             }
-                        }
+                       // }
                         ttweetser.setMessages(messages); //updates the messages
                         ttweetser.broadcast(hashes, received.substring(6, received.length()));
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
@@ -280,11 +281,11 @@ class ClientHandler extends Thread {
                         hashTagUsers.remove(this);
                         hashtags.replace(values.get(i), hashTagUsers);
                     }
-                    LinkedList<String>[] messages = ttweetser.getMessages();
+                    ArrayList<ArrayList<String>> messages = ttweetser.getMessages();
                     if (messages != null) {
-                        for (int i = 0; i < messages.length; i++) { //remove user and their messages
-                            if ((messages[i] != null) && (messages[i].getFirst().equals(username))) {
-                                messages[i] = null;
+                        for (int i = 0; i < messages.size(); i++) { //remove user and their messages
+                            if ((messages.get(i) != null) && (messages.get(i).get(0).equals(username))) {
+                                messages.set(i, null);
                             }
                         }
                     }
@@ -297,21 +298,28 @@ class ClientHandler extends Thread {
                     //add logic to have user info removed
                     break;
                 } else if (received.equals("getusers")) {
-                    writer.println(ttweetser.getUsers());
+                    HashSet<String> currentUsers = ttweetser.getUsers();
+                    for (String temp :currentUsers) {
+                        writer.println(temp);
+                    }
+                    //writer.println(ttweetser.getUsers());
                 } else if (received.length() > 9 && received.substring(0,9).equals("gettweets")) {
-                    LinkedList<String>[] messages = ttweetser.getMessages();
+                    ArrayList<ArrayList<String>> messages = ttweetser.getMessages();
                     String user = received.substring(10, received.length()); //username of the user we want the tweets of
-                    LinkedList<String> usersTweets = new LinkedList<>();
-                    for (int i = 0; i <5; i++) { //goes through the messages array, finds the user's linked list
-                        if ((messages[i]!= null) && messages[i].getFirst().equals(user)) {
-                            usersTweets = messages[i];
+                    ArrayList<String> usersTweets = new ArrayList<>();
+                    for (int i = 0; i < 5; i++) { //goes through the messages array, finds the user's linked list
+                        if ((messages.get(i)!= null) && messages.get(i).get(0).equals(user)) {
+                            usersTweets = messages.get(i);
                         }
                     }
                     HashSet<String> currentUsers = ttweetser.getUsers();
                     if (!currentUsers.contains(user)) {
                         writer.println("no user " + user + " in the system");
                     } else {
-                        writer.println(usersTweets); //sends the linked list to the client
+                        for (int i = 1; i < usersTweets.size(); i++) {
+                            writer.println(user + ": " + usersTweets.get(i));
+                        }
+                        //writer.println(usersTweets); //sends the linked list to the client
                     }
                 } else {
                     writer.println("invalid request");

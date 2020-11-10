@@ -62,13 +62,6 @@ public class ttweetcli {
                         }
                     }
 
-                    //if (line != null) {
-
-                    //    if (!line.equals("null")) {
-                    //        System.out.println(line);
-                    //    }
-                    //}
-
 
 
                     if (tosend != null && tosend.equals("exit")) {
