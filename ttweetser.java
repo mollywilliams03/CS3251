@@ -9,8 +9,7 @@ public class ttweetser {
     static HashMap<String, ArrayList<ClientHandler>> hashtags = new HashMap<String, ArrayList<ClientHandler>>(); //maps hashtags to people subscribed to them
     static LinkedList<String>[] messages = new LinkedList[5]; //stores all the messages
     static HashMap<String, ArrayList<String>> usersToSub = new HashMap<>(); //maps users to their subscriptions
-    static ArrayList<ArrayList<String>> timelines = new ArrayList<ArrayList<String>>(5); //fist element in the arraylist is the user the list belongs to, the next ones are the messages
-    //ArrayList<ArrayList<Individual>> group = new ArrayList<ArrayList<Individual>>(4);
+    static ArrayList<ArrayList<String>> timelines = new ArrayList<ArrayList<String>>(5); //fist element in the arraylist is the user the list belongs to, the next ones are the message
 
     public static LinkedList<String>[] getMessages() {
         return messages;
@@ -44,11 +43,33 @@ public class ttweetser {
         return timelines;
     }
 
-    public static void broadcast(String hashtagToSend, String message)  {
+    public static void broadcast(String hashtagToSend, String message, String sendingUser)  {
         // send message to all connected users
         ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
-        for ( ClientHandler c : list )
+        for ( ClientHandler c : list ) {
            c.sendMessage(message);
+           //add to the timeline data structure
+            boolean found = false;
+            int firstNull = 0;
+            boolean set = false;
+            for (int d = 0; d < 5; d++) {
+                if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
+                    timelines.get(d).add(message); //add this to the correct arraylist
+                    found = true;
+                }
+                if ((timelines.get(d) == null) && (set == false)) {
+                    firstNull = d;
+                    set = true;
+                }
+            }
+            if (found == false) { //if it was never found
+                ArrayList<String> toAdd = new ArrayList<String>();
+                toAdd.add(c.username); //add the username first thing
+                String together = sendingUser + ": " + message; //makes the string
+                toAdd.add(together); //add the message
+                timelines.set(firstNull, toAdd);
+            }
+        }
     }
 
     public static void main(String args[]) throws Exception {
@@ -177,11 +198,9 @@ class ClientHandler extends Thread {
                                 messages[firstNull].add(received.substring(6, received.length())); ////adds the message to the correct user's linked list
 
                             }
-<<<<<<< HEAD
-=======
                         }
                         ttweetser.setMessages(messages); //updates the messages
-                        ttweetser.broadcast(hashes, received.substring(6, received.length()));
+                        ttweetser.broadcast(hashes, received.substring(6, received.length()), this.username);
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         String[] hashesArr = hashes.split("#");
                         for (int i = 0; i < hashesArr.length; i++) {
@@ -193,7 +212,6 @@ class ClientHandler extends Thread {
                             //         thisWriter.println(theTweet);
                             //     }
                             // }
->>>>>>> d78553d929e9176f895f1eb6097d5cabe3ea927b
                         }
                         ttweetser.setMessages(messages); //updates the messages
                         //ttweetser.publish(received.substring(6, received.length()), hashes, this.username); //calls the publish method in the server

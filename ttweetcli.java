@@ -42,13 +42,6 @@ public class ttweetcli {
 
                 //String line = "";
                 while (true) {
-<<<<<<< HEAD
-                    String tosend = scanner.nextLine(); //gets the input from terminal
-
-                    writer.println(tosend); //sends input to server
-
-                    String line = reader.readLine(); //reads the stuff from the server
-=======
                     String tosend = "";
                     String line = "";
 
@@ -62,39 +55,19 @@ public class ttweetcli {
                     if (reader.ready()) {
                         line = reader.readLine(); //read server response
                         if (line != null) {
->>>>>>> d78553d929e9176f895f1eb6097d5cabe3ea927b
 
                             if (!line.equals("null")) {
                                 System.out.println(line);
                             }
                         }
-<<<<<<< HEAD
-                    }           
-                    if (tosend.equals("exit")) {
-=======
                     }
-
-                    //if (line != null) {
-
-                    //    if (!line.equals("null")) {
-                    //        System.out.println(line);
-                    //    }
-                    //}
-
 
 
                     if (tosend != null && tosend.equals("exit")) {
->>>>>>> d78553d929e9176f895f1eb6097d5cabe3ea927b
                         System.out.println("bye bye");
                         socket.close();
                         break;
                     }
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> d78553d929e9176f895f1eb6097d5cabe3ea927b
                 }
                 scanner.close();
 
