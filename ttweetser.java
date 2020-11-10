@@ -46,6 +46,7 @@ public class ttweetser {
     public static void broadcast(String hashtagToSend, String message) {
         // send message to all connected users
         ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
+<<<<<<< HEAD
         //System.out.println(list);
         if (list != null) {
             for (ClientHandler c : list) {
@@ -79,6 +80,38 @@ public class ttweetser {
 //                toAdd.add(together); //add the message
 //                timelines.set(0, toAdd);
 //            }
+=======
+        for (ClientHandler c : list) {
+            c.sendMessage(message);
+            //add to the timeline data structure
+            boolean found = false;
+            int firstNull = 0;
+            boolean set = false;
+            if (timelines != null) { //if it has been created
+                for (int d = 0; d < timelines.size(); d++) {
+                    if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
+                        timelines.get(d).add(message); //add this to the correct arraylist
+                        found = true;
+                    }
+                    if ((timelines.get(d) == null) && (set == false)) {
+                        firstNull = d;
+                        set = true;
+                    }
+                }
+                if (found == false) { //if it was never found
+                    ArrayList<String> toAdd = new ArrayList<String>();
+                    toAdd.add(c.username); //add the username first thing
+                    String together = sendingUser + ": " + message + "\n"; //makes the string
+                    toAdd.add(together); //add the message
+                    timelines.set(firstNull, toAdd);
+                }
+            } else {
+                ArrayList<String> toAdd = new ArrayList<String>();
+                toAdd.add(c.username); //add the username first thing
+                String together = sendingUser + ": " + message + "\n"; //makes the string
+                toAdd.add(together); //add the message
+                timelines.set(0, toAdd);
+>>>>>>> 8480799bcbd2f96524c5e4813c00db59d91a1ff7
             }
         }
     }
@@ -199,7 +232,6 @@ class ClientHandler extends Thread {
                                     break;
                                 }
                             }
-
                             if ((messages.get(h) == null) && (set == false)) { //gets the first null entry
                                 firstNull = h; //where the null entry is
                                 set = true; //the firstnull variable has been set
@@ -217,7 +249,6 @@ class ClientHandler extends Thread {
                                 //ttweetser.broadcast(hash, received.substring(6, received.length()), this.username);
                                 ttweetser.broadcast(hash, mess);
                         }
-
 
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         for (int i = 0; i < hashesArr.length; i++) {
@@ -252,9 +283,9 @@ class ClientHandler extends Thread {
                     ttweetser.setHashtags(hashtags); //sets with the changes made
                     writer.println("operation success");
                 } else if (received.length() > 11 && received.substring(0,11).equals("subscribe #")) {
-                    //subscribe logic
-                    //add them to the hashmap
-                    //check if the hashtag exists, if it doesn't just add an entry to the hashmap, if it does then add to that entry
+//                    subscribe logic
+//                    add them to the hashmap
+//                    check if the hashtag exists, if it doesn't just add an entry to the hashmap, if it does then add to that entry
                     String sub = received.substring(11,received.length()); //gets the hashtag
                     HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags(); //gets the hashtags
                     HashMap<String, ArrayList<String>> usersToSub = ttweetser.getUsersToSub(); //gets the users mapped with their subs
@@ -304,16 +335,21 @@ class ClientHandler extends Thread {
                     if (timelines != null) {
                         for (int i = 0; i < timelines.size(); i++) {
                             ArrayList<String> toPrint = timelines.get(i);
-                            if (toPrint.get(0).equals(this.username)) { //if it equals the username
-                                String toSend = ""; //creates the string to send
-                                int count = 1;
-                                while (toPrint.get(count) != null) {
-                                    toSend = toSend + toPrint.get(count) + "\n"; //adds the arraylist entry to the string
-                                    count++;
+                            if (toPrint != null) {
+                                if (toPrint.get(0).equals(this.username)) { //if it equals the username
+                                    String toSend = ""; //creates the string to send
+                                    int count = 1;
+                                    while (toPrint.get(count) != null) {
+                                        toSend = toSend + toPrint.get(count); //adds the arraylist entry to the string
+                                        count++;
+                                    }
+                                    writer.println(toSend); //sends the string to the server
+                                    found = true;
                                 }
-                                writer.println(toSend); //sends the string to the server
-                                found = true;
                             }
+                        }
+                        if (found == false) {
+                            writer.println("You haven't been able to recieve posts yet!");
                         }
                     } else {
                         writer.println("No posts yet!");
