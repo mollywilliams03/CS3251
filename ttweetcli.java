@@ -62,16 +62,16 @@ public class ttweetcli {
                         }
                     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0faee496a1ffa1c4dfbcb56af171613c2417d832
 
                     if (tosend != null && tosend.equals("exit")) {
                         System.out.println("bye bye");
                         socket.close();
                         break;
                     }
-
-
-
                 }
                 scanner.close();
 
