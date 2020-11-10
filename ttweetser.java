@@ -43,75 +43,42 @@ public class ttweetser {
         return timelines;
     }
 
-    public static void broadcast(String hashtagToSend, String message) {
+    public static void broadcast(String hashtagToSend, String message, String sendingUser) {
         // send message to all connected users
         ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
-<<<<<<< HEAD
         //System.out.println(list);
         if (list != null) {
             for (ClientHandler c : list) {
                 c.sendMessage(message);
                 //add to the timeline data structure
-                //boolean found = false;
-                //int firstNull = 0;
-                //boolean set = false;
-                //if (timelines != null) {
-                //    for (int d = 0; d < 5; d++) {
-                //       if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
-                //           timelines.get(d).add(message); //add this to the correct arraylist
-                //           found = true;
-                //       }
-                //       if ((timelines.get(d) == null) && (set == false)) {
-                //           firstNull = d;
-                //          set = true;
-//                    }
-//                }
-//                if (found == false) { //if it was never found
-//                    ArrayList<String> toAdd = new ArrayList<String>();
-//                    toAdd.add(c.username); //add the username first thing
-//                    String together = sendingUser + ": " + message + "\n"; //makes the string
-//                    toAdd.add(together); //add the message
-//                    timelines.set(firstNull, toAdd);
-//                }
-//            } else {
-//                ArrayList<String> toAdd = new ArrayList<String>();
-//                toAdd.add(c.username); //add the username first thing
-//                String together = sendingUser + ": " + message + "\n"; //makes the string
-//                toAdd.add(together); //add the message
-//                timelines.set(0, toAdd);
-//            }
-=======
-        for (ClientHandler c : list) {
-            c.sendMessage(message);
-            //add to the timeline data structure
-            boolean found = false;
-            int firstNull = 0;
-            boolean set = false;
-            if (timelines != null) { //if it has been created
-                for (int d = 0; d < timelines.size(); d++) {
-                    if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
-                        timelines.get(d).add(message); //add this to the correct arraylist
-                        found = true;
+                boolean found = false;
+                int firstNull = 0;
+                boolean set = false;
+                if (timelines != null) { //if it has been created
+                    for (int d = 0; d < timelines.size(); d++) {
+                        if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
+                            timelines.get(d).add(message); //add this to the correct arraylist
+                            found = true;
+                        }
+                        if ((timelines.get(d) == null) && (set == false)) {
+                            firstNull = d;
+                            set = true;
+                        }
                     }
-                    if ((timelines.get(d) == null) && (set == false)) {
-                        firstNull = d;
-                        set = true;
+                    if (found == false) { //if it was never found
+                        ArrayList<String> toAdd = new ArrayList<String>();
+                        toAdd.add(c.username); //add the username first thing
+                        String together = sendingUser + ": " + message + "\n"; //makes the string
+                        toAdd.add(together); //add the message
+                        timelines.set(firstNull, toAdd);
                     }
-                }
-                if (found == false) { //if it was never found
+                } else {
                     ArrayList<String> toAdd = new ArrayList<String>();
                     toAdd.add(c.username); //add the username first thing
                     String together = sendingUser + ": " + message + "\n"; //makes the string
                     toAdd.add(together); //add the message
-                    timelines.set(firstNull, toAdd);
+                    timelines.set(0, toAdd);
                 }
-            } else {
-                ArrayList<String> toAdd = new ArrayList<String>();
-                toAdd.add(c.username); //add the username first thing
-                String together = sendingUser + ": " + message + "\n"; //makes the string
-                toAdd.add(together); //add the message
-                timelines.set(0, toAdd);
->>>>>>> 8480799bcbd2f96524c5e4813c00db59d91a1ff7
             }
         }
     }
@@ -247,7 +214,7 @@ class ClientHandler extends Thread {
                         for (String hash: hashesArr) {
                                 String mess = this.username + ": " + received.substring(6, received.length());
                                 //ttweetser.broadcast(hash, received.substring(6, received.length()), this.username);
-                                ttweetser.broadcast(hash, mess);
+                                ttweetser.broadcast(hash, mess, this.username);
                         }
 
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
