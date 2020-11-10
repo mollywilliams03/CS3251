@@ -304,12 +304,17 @@ class ClientHandler extends Thread {
                     if (timelines != null) {
                         for (int i = 0; i < timelines.size(); i++) {
                             ArrayList<String> toPrint = timelines.get(i);
-                            System.out.println(toPrint);
-                            if (toPrint != null) { //this entry exists
+                            HashSet<String> usersNow = ttweetser.getUsers();
+                            // System.out.println(toPrint);
+                            if ((toPrint != null) && (usersNow != null)) { //this entry exists, and users now is not null
                                 if (toPrint.get(0).equals(this.username)) { //if it equals the username
                                     String toSend = ""; //creates the string to send
                                     for (int p = 1; p < toPrint.size(); p++) {
-                                        writer.println(toPrint.get(p)); //adds the arraylist entry to the string
+                                        //have to check username which is delineated by the :
+                                        String[] check = toPrint.get(p).split(":");
+                                        if (usersNow.contains(check[0])) {
+                                            writer.println(toPrint.get(p)); //adds the arraylist entry to the string
+                                        }
                                     }
                                     found = true;
                                 }
