@@ -49,28 +49,27 @@ public class ttweetser {
         for ( ClientHandler c : list ) {
            c.sendMessage(message);
            //add to the timeline data structure
-            boolean found = false;
-            int firstNull = 0;
-            boolean set = false;
-            for (int d = 0; d < 5; d++) {
-                if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
-                    timelines.get(d).add(message); //add this to the correct arraylist
-                    found = true;
-                }
-                if ((timelines.get(d) == null) && (set == false)) {
-                    firstNull = d;
-                    set = true;
-                }
-            }
-            if (found == false) { //if it was never found
-                ArrayList<String> toAdd = new ArrayList<String>();
-                toAdd.add(c.username); //add the username first thing
-                String together = sendingUser + ": " + message; //makes the string
-                toAdd.add(together); //add the message
-                timelines.set(firstNull, toAdd);
+            //boolean found = false;
+            // int firstNull = 0;
+            //boolean set = false;
+            //for (int d = 0; d < 5; d++) {
+            //    if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
+            //        timelines.get(d).add(message); //add this to the correct arraylist
+            //        found = true;
+            //    }
+            //    if ((timelines.get(d) == null) && (set == false)) {
+            //        firstNull = d;
+            //        set = true;
+            //    }
+            //}
+            //if (found == false) { //if it was never found
+            //    ArrayList<String> toAdd = new ArrayList<String>();
+            //    toAdd.add(c.username); //add the username first thing
+            //    String together = sendingUser + ": " + message; //makes the string
+            //    toAdd.add(together); //add the message
+            //    timelines.set(firstNull, toAdd);
             }
         }
-    }
 
     public static void main(String args[]) throws Exception {
         if (args.length != 1) {
