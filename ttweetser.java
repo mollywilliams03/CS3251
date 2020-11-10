@@ -43,12 +43,12 @@ public class ttweetser {
         return timelines;
     }
 
-    public static void broadcast(String hashtagToSend, String message, String sendingUser) {
+    public static void broadcast(ArrayList<ClientHandler> users, String message, String sendingUser) {
         // send message to all connected users
-        ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
+        //ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
         //System.out.println(list);
-        if (list != null) {
-            for (ClientHandler c : list) {
+       // if (list != null) {
+            for (ClientHandler c : users) {
                 c.sendMessage(message);
                 //add to the timeline data structure
                 boolean found = false;
@@ -82,7 +82,7 @@ public class ttweetser {
                     timelines.set(0, toAdd);
                 }
             }
-        }
+        //}
     }
 
     public static void main(String args[]) throws Exception {
@@ -212,14 +212,27 @@ class ClientHandler extends Thread {
                             messages.get(firstNull).add(received.substring(6, received.length())); ////adds the message to the correct user's
                         }
                         ttweetser.setMessages(messages); //updates the messages
-                        String[] hashesArr = hashes.split("#");
-                        for (String hash: hashesArr) {
-                                String mess = this.username + ": " + received.substring(6, received.length());
-                                //ttweetser.broadcast(hash, received.substring(6, received.length()), this.username);
-                                ttweetser.broadcast(hash, mess, this.username);
-                        }
-
                         HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
+                        String[] hashesArr = hashes.split("#");
+                        ArrayList<ClientHandler> users = new ArrayList<>();
+                        String mess = this.username + ": " + received.substring(6, received.length());
+                        for (String hash: hashesArr) {
+                                //String mess = this.username + ": " + received.substring(6, received.length());
+
+                                ArrayList<ClientHandler> thisHash = hashtags.get(hash);
+                                if (thisHash != null) {
+                                    for (int i = 0; i < thisHash.size(); i++) {
+                                        if (!users.contains(thisHash.get(i))) {
+                                            users.add(thisHash.get(i));
+                                        }
+                                    }
+                                }
+                                //ttweetser.broadcast(hash, received.substring(6, received.length()), this.username);
+                                //ttweetser.broadcast(users, mess, this.username);
+                        }
+                        ttweetser.broadcast(users, mess, this.username);
+
+
                         for (int i = 0; i < hashesArr.length; i++) {
                             hashtags.putIfAbsent(hashesArr[i], new ArrayList<ClientHandler>()); //only inserts new key if it doesnt already exists
                         }
