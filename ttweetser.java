@@ -43,15 +43,12 @@ public class ttweetser {
         return timelines;
     }
 
-<<<<<<< HEAD
-    public static void broadcast(ArrayList<ClientHandler> users, String message, String sendingUser) {
-=======
+
     public static void setTimelines(ArrayList<ArrayList<String>> tl) {
         timelines = tl;
     }
 
-    public static void broadcast(String hashtagToSend, String message, String sendingUser) {
->>>>>>> 13fcdb1185999cd65f11184d31f959b5ac4b0304
+        public static void broadcast(ArrayList<ClientHandler> users, String message, String sendingUser) {
         // send message to all connected users
         //ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
         //System.out.println(list);
