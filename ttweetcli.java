@@ -17,7 +17,7 @@ public class ttweetcli {
         //logic to check if the username is valid
         for (int i = 0; i < username.length(); i++) {
             char curr = username.charAt(i);
-            if (!Character.isLetter(curr) && !(username.charAt(i) >= '0' && username.charAt(i) <= '9')) {
+            if (!Character.isLetter(curr) && !(username.charAt(i) >= '0' && username.charAt(i) <= '9' || username.length() == 0)) {
                 System.out.println("error: username has wrong format, connection refused.");
                 System.exit(0);
             }
