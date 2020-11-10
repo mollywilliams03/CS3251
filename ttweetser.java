@@ -52,22 +52,30 @@ public class ttweetser {
             boolean found = false;
             int firstNull = 0;
             boolean set = false;
-            for (int d = 0; d < 5; d++) {
-                if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
-                    timelines.get(d).add(message); //add this to the correct arraylist
-                    found = true;
+            if (timelines != null) {
+                for (int d = 0; d < timelines.size(); d++) {
+                    if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
+                        timelines.get(d).add(message); //add this to the correct arraylist
+                        found = true;
+                    }
+                    if ((timelines.get(d) == null) && (set == false)) {
+                        firstNull = d;
+                        set = true;
+                    }
                 }
-                if ((timelines.get(d) == null) && (set == false)) {
-                    firstNull = d;
-                    set = true;
+                if (found == false) { //if it was never found
+                    ArrayList<String> toAdd = new ArrayList<String>();
+                    toAdd.add(c.username); //add the username first thing
+                    String together = sendingUser + ": " + message + "\n"; //makes the string
+                    toAdd.add(together); //add the message
+                    timelines.add(toAdd);
                 }
-            }
-            if (found == false) { //if it was never found
+            } else { //create the timelines
                 ArrayList<String> toAdd = new ArrayList<String>();
                 toAdd.add(c.username); //add the username first thing
-                String together = sendingUser + ": " + message; //makes the string
+                String together = sendingUser + ": " + message + "\n"; //makes the string
                 toAdd.add(together); //add the message
-                timelines.set(firstNull, toAdd);
+                timelines.set(0, toAdd);
             }
         }
     }
