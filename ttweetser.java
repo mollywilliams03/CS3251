@@ -152,7 +152,7 @@ class ClientHandler extends Thread {
             try {
                 //writer.println("whats up");
                 //received = in.readUTF();
-                System.out.println(this.socket);
+                //System.out.println(this.socket);
                 received = reader.readLine();
                 //System.out.println(received);
                 HashMap<String, ArrayList<String>> usersMap = ttweetser.getUsersToSub(); //gets the users mapped with their subs
@@ -165,13 +165,16 @@ class ClientHandler extends Thread {
                     if (endOfTweet != 0) {
                         theTweet = remaining.substring(0, endOfTweet);
                     }
+                    remaining = remaining.substring(endOfTweet, remaining.length());
                     int first = remaining.indexOf("#");
-                    String hashes = remaining.substring(first + 1, remaining.length());
+
+
                     if (theTweet.length() == 0) {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
                         writer.println("message length illegal, connection refused.");
                     } else {
+                        String hashes = remaining.substring(first + 1, remaining.length());
                         //access hashmap of hashtags, send out to the users somehow
                         ArrayList<ArrayList<String>> messages = ttweetser.getMessages(); //gets the messages
                         //if (messages != null) {
@@ -195,14 +198,16 @@ class ClientHandler extends Thread {
                                 messages.set(firstNull, new ArrayList<String>()); //creates new arraylist
                                 messages.get(firstNull).add(this.username); //adds username first thing
                                 messages.get(firstNull).add(received.substring(6, received.length())); ////adds the message to the correct user's
-                                System.out.println(messages.get(firstNull));
+                                //System.out.println(messages.get(firstNull));
 
                             }
                        // }
                         ttweetser.setMessages(messages); //updates the messages
-                        ttweetser.broadcast(hashes, received.substring(6, received.length()), this.username);
-                        HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         String[] hashesArr = hashes.split("#");
+                        for (String hash: hashesArr) {
+                            ttweetser.broadcast(hash, received.substring(6, received.length()), this.username);
+                        }
+                        HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags();
                         for (int i = 0; i < hashesArr.length; i++) {
                             hashtags.putIfAbsent(hashesArr[i], new ArrayList<ClientHandler>()); //only inserts new key if it doesnt already exist
                             // ArrayList<ClientHandler> usersToSend = hashtags.get(hashesArr[i]); //gets list of users to send to
@@ -260,7 +265,7 @@ class ClientHandler extends Thread {
                         } else {
                             if (hashtags.containsKey(sub)) { //if its already in there
                                 ArrayList<ClientHandler> toAddTo = hashtags.get(sub); //gets hashtag's arraylist
-                                System.out.println(toAddTo);
+                                //System.out.println(toAddTo);
                                 toAddTo.add(this); //adds the user to the arraylist
                             } else {
                                 ArrayList<ClientHandler> newHash = new ArrayList<ClientHandler>(); //creates new arraylist
@@ -280,8 +285,8 @@ class ClientHandler extends Thread {
                         }
                         check = 0; //reset check
                         ttweetser.setUsersToSub(usersToSub);
-                        System.out.println(usersToSub);
-                        System.out.println(hashtags);
+                        //System.out.println(usersToSub);
+                        //System.out.println(hashtags);
                         writer.println("operation success");
                     } else {
                         writer.println("sub " + sub + " failed, already exists or exceeds 3 limitation");
