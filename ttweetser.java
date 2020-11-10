@@ -43,14 +43,14 @@ public class ttweetser {
         return timelines;
     }
 
-    public static void broadcast(String hashtagToSend, String message, String sendingUser)  {
+    public static void broadcast(String hashtagToSend, String message, String sendingUser) {
         // send message to all connected users
         ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
-        for ( ClientHandler c : list ) {
+        for (ClientHandler c : list) {
             c.sendMessage(message);
             //add to the timeline data structure
             boolean found = false;
-             int firstNull = 0;
+            int firstNull = 0;
             boolean set = false;
             if (timelines != null) {
                 for (int d = 0; d < 5; d++) {
@@ -78,6 +78,7 @@ public class ttweetser {
                 timelines.set(0, toAdd);
             }
         }
+    }
 
     public static void main(String args[]) throws Exception {
         if (args.length != 1) {
