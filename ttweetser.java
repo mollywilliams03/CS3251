@@ -9,7 +9,7 @@ public class ttweetser {
     static HashMap<String, ArrayList<ClientHandler>> hashtags = new HashMap<String, ArrayList<ClientHandler>>(); //maps hashtags to people subscribed to them
     static ArrayList<ArrayList<String>> messages = new ArrayList<>(Arrays.asList(null, null, null, null, null)); //stores all the messages
     static HashMap<String, ArrayList<String>> usersToSub = new HashMap<>(); //maps users to their subscriptions
-    static ArrayList<ArrayList<String>> timelines = new ArrayList<ArrayList<String>>(5); //fist element in the arraylist is the user the list belongs to, the next ones are the message
+    static ArrayList<ArrayList<String>> timelines = new ArrayList<ArrayList<String>>(Arrays.asList(null, null, null, null, null)); //fist element in the arraylist is the user the list belongs to, the next ones are the message
 
     public static ArrayList<ArrayList<String>> getMessages() {
         return messages;
@@ -56,9 +56,11 @@ public class ttweetser {
                 boolean set = false;
                 if (timelines != null) { //if it has been created
                     for (int d = 0; d < timelines.size(); d++) {
-                        if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
-                            timelines.get(d).add(message); //add this to the correct arraylist
-                            found = true;
+                        if (timelines.get(d) != null) {
+                            if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
+                                timelines.get(d).add(message); //add this to the correct arraylist
+                                found = true;
+                            }
                         }
                         if ((timelines.get(d) == null) && (set == false)) {
                             firstNull = d;
@@ -68,14 +70,14 @@ public class ttweetser {
                     if (found == false) { //if it was never found
                         ArrayList<String> toAdd = new ArrayList<String>();
                         toAdd.add(c.username); //add the username first thing
-                        String together = sendingUser + ": " + message + "\n"; //makes the string
+                        String together = message; //makes the string
                         toAdd.add(together); //add the message
                         timelines.set(firstNull, toAdd);
                     }
                 } else {
                     ArrayList<String> toAdd = new ArrayList<String>();
                     toAdd.add(c.username); //add the username first thing
-                    String together = sendingUser + ": " + message + "\n"; //makes the string
+                    String together = message; //makes the string
                     toAdd.add(together); //add the message
                     timelines.set(0, toAdd);
                 }
@@ -302,15 +304,13 @@ class ClientHandler extends Thread {
                     if (timelines != null) {
                         for (int i = 0; i < timelines.size(); i++) {
                             ArrayList<String> toPrint = timelines.get(i);
-                            if (toPrint != null) {
+                            System.out.println(toPrint);
+                            if (toPrint != null) { //this entry exists
                                 if (toPrint.get(0).equals(this.username)) { //if it equals the username
                                     String toSend = ""; //creates the string to send
-                                    int count = 1;
-                                    while (toPrint.get(count) != null) {
-                                        toSend = toSend + toPrint.get(count); //adds the arraylist entry to the string
-                                        count++;
+                                    for (int p = 1; p < toPrint.size(); p++) {
+                                        writer.println(toPrint.get(p)); //adds the arraylist entry to the string
                                     }
-                                    writer.println(toSend); //sends the string to the server
                                     found = true;
                                 }
                             }
