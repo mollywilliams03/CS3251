@@ -43,39 +43,42 @@ public class ttweetser {
         return timelines;
     }
 
-    public static void broadcast(String hashtagToSend, String message, String sendingUser) {
+    public static void broadcast(String hashtagToSend, String message) {
         // send message to all connected users
         ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
-        for (ClientHandler c : list) {
-            c.sendMessage(message);
-            //add to the timeline data structure
-            boolean found = false;
-            int firstNull = 0;
-            boolean set = false;
-            if (timelines != null) {
-                for (int d = 0; d < 5; d++) {
-                    if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
-                        timelines.get(d).add(message); //add this to the correct arraylist
-                        found = true;
-                    }
-                    if ((timelines.get(d) == null) && (set == false)) {
-                        firstNull = d;
-                        set = true;
-                    }
-                }
-                if (found == false) { //if it was never found
-                    ArrayList<String> toAdd = new ArrayList<String>();
-                    toAdd.add(c.username); //add the username first thing
-                    String together = sendingUser + ": " + message + "\n"; //makes the string
-                    toAdd.add(together); //add the message
-                    timelines.set(firstNull, toAdd);
-                }
-            } else {
-                ArrayList<String> toAdd = new ArrayList<String>();
-                toAdd.add(c.username); //add the username first thing
-                String together = sendingUser + ": " + message + "\n"; //makes the string
-                toAdd.add(together); //add the message
-                timelines.set(0, toAdd);
+        //System.out.println(list);
+        if (list != null) {
+            for (ClientHandler c : list) {
+                c.sendMessage(message);
+                //add to the timeline data structure
+                //boolean found = false;
+                //int firstNull = 0;
+                //boolean set = false;
+                //if (timelines != null) {
+                //    for (int d = 0; d < 5; d++) {
+                //       if (timelines.get(d).get(0).equals(c.username)) { //if it is already in the timeline
+                //           timelines.get(d).add(message); //add this to the correct arraylist
+                //           found = true;
+                //       }
+                //       if ((timelines.get(d) == null) && (set == false)) {
+                //           firstNull = d;
+                //          set = true;
+//                    }
+//                }
+//                if (found == false) { //if it was never found
+//                    ArrayList<String> toAdd = new ArrayList<String>();
+//                    toAdd.add(c.username); //add the username first thing
+//                    String together = sendingUser + ": " + message + "\n"; //makes the string
+//                    toAdd.add(together); //add the message
+//                    timelines.set(firstNull, toAdd);
+//                }
+//            } else {
+//                ArrayList<String> toAdd = new ArrayList<String>();
+//                toAdd.add(c.username); //add the username first thing
+//                String together = sendingUser + ": " + message + "\n"; //makes the string
+//                toAdd.add(together); //add the message
+//                timelines.set(0, toAdd);
+//            }
             }
         }
     }
@@ -177,7 +180,6 @@ class ClientHandler extends Thread {
                     remaining = remaining.substring(endOfTweet, remaining.length());
                     int first = remaining.indexOf("#");
                     String hashes = remaining.substring(first, remaining.length());
-
                     if (theTweet.length() == 0) {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
@@ -210,9 +212,10 @@ class ClientHandler extends Thread {
                         }
                         ttweetser.setMessages(messages); //updates the messages
                         String[] hashesArr = hashes.split("#");
-
                         for (String hash: hashesArr) {
-                            ttweetser.broadcast(hash, received.substring(6, received.length()), this.username);
+                                String mess = this.username + ": " + received.substring(6, received.length());
+                                //ttweetser.broadcast(hash, received.substring(6, received.length()), this.username);
+                                ttweetser.broadcast(hash, mess);
                         }
 
 
