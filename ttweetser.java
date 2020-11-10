@@ -43,7 +43,15 @@ public class ttweetser {
         return timelines;
     }
 
+<<<<<<< HEAD
     public static void broadcast(ArrayList<ClientHandler> users, String message, String sendingUser) {
+=======
+    public static void setTimelines(ArrayList<ArrayList<String>> tl) {
+        timelines = tl;
+    }
+
+    public static void broadcast(String hashtagToSend, String message, String sendingUser) {
+>>>>>>> 13fcdb1185999cd65f11184d31f959b5ac4b0304
         // send message to all connected users
         //ArrayList<ClientHandler> list = hashtags.get(hashtagToSend); //gets the list of users subscribed to that hashtag
         //System.out.println(list);
@@ -357,6 +365,17 @@ class ClientHandler extends Thread {
                         }
                     }
                     ttweetser.setMessages(messages); //updates the messages
+
+                    ArrayList<ArrayList<String>> timelines = ttweetser.getTimelines();
+                    if (timelines != null) {
+                        for (int i = 0; i < timelines.size(); i++) { //remove user and their messages
+                            if ((timelines.get(i) != null) && (timelines.get(i).get(0).equals(username))) {
+                                timelines.set(i, null);
+                            }
+                        }
+                    }
+                    ttweetser.setTimelines(timelines); //updates the messages
+
                     this.socket.close();
                     ttweetser.removeUser(username);
                     usersToSub.remove(username);
