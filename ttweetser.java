@@ -43,7 +43,10 @@ public class ttweetser {
         return timelines;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 886edb1d4fc99cbb6adf1769d262a55d0c33cb4a
     public static void setTimelines(ArrayList<ArrayList<String>> tl) {
         timelines = tl;
     }

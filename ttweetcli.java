@@ -8,6 +8,9 @@ public class ttweetcli {
         if (args.length != 3) { //invalid number of args
             System.out.println("error: args should contain <ServerIP> <ServerPort> <Username>");
             System.exit(0);
+        } else if ((Integer.parseInt(args[1]) < 1024) || (Integer.parseInt(args[1]) > 65535)) {
+            System.out.println("error: server port invalid, connection refused.");
+            System.exit(0);
         }
 
         String serverIP = args[0];
@@ -15,13 +18,19 @@ public class ttweetcli {
         String username = args[2];
 
         //logic to check if the username is valid
-        for (int i = 0; i < username.length(); i++) {
-            char curr = username.charAt(i);
-            if ((!Character.isLetter(curr) && !(username.charAt(i) >= '0' && username.charAt(i) <= '9') || username.equals("\"\""))) {
-                System.out.println("error: username has wrong format, connection refused.");
-                System.exit(0);
+        if (username.length() == 0) {
+            System.out.println("error: username has wrong format, connection refused.");
+            System.exit(0);
+        } else {
+            for (int i = 0; i < username.length(); i++) {
+                char curr = username.charAt(i);
+                if (!Character.isLetter(curr) && !(username.charAt(i) >= '0' && username.charAt(i) <= '9')) {
+                    System.out.println("error: username has wrong format, connection refused.");
+                    System.exit(0);
+                }
             }
         }
+
         try
         {
             Scanner scanner = new Scanner(System.in);
