@@ -190,6 +190,8 @@ class ClientHandler extends Thread {
                         writer.println("message format illegal.");
                     } else if (theTweet.length() > 150) {
                         writer.println("message length illegal, connection refused.");
+                    } else if (received.contains("##")) {
+                        writer.println("hashtag illegal format, connection refused.");
                     } else {
                         //access hashmap of hashtags, send out to the users somehow
                         ArrayList<ArrayList<String>> messages = ttweetser.getMessages(); //gets the messages
