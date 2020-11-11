@@ -293,15 +293,21 @@ class ClientHandler extends Thread {
                                 ArrayList<ClientHandler> toAddTo = set.getValue(); //gets the value of this particular set
                                 toAddTo.add(this); //add if its there
                             }
+                            writer.println("operation success");
                         } else {
                             if (hashtags.containsKey(sub)) { //if its already in there
                                 ArrayList<ClientHandler> toAddTo = hashtags.get(sub); //gets hashtag's arraylist
-                                //System.out.println(toAddTo);
-                                toAddTo.add(this); //adds the user to the arraylist
+                                if (toAddTo.contains(this)) {
+                                    writer.println("sub " + sub + " failed, already exists or exceeds 3 limitation");
+                                } else {
+                                    toAddTo.add(this); //adds the user to the arraylist
+                                    writer.println("operation success");
+                                }
                             } else {
                                 ArrayList<ClientHandler> newHash = new ArrayList<ClientHandler>(); //creates new arraylist
                                 newHash.add(this); //adds this user to the arraylist
                                 hashtags.put(sub, newHash); //adds the hashtag with this user subscribed to it
+                                writer.println("operation success");
                             }
                         }
                         int check = 0; //variable to check if already subscribed
@@ -317,7 +323,7 @@ class ClientHandler extends Thread {
                         check = 0; //reset check
                         //System.out.println(usersToSub);
                         //System.out.println(hashtags);
-                        writer.println("operation success");
+                        // writer.println("operation success");
                     } else {
                         writer.println("sub " + sub + " failed, already exists or exceeds 3 limitation");
                     }
