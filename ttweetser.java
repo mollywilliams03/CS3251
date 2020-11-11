@@ -43,10 +43,7 @@ public class ttweetser {
         return timelines;
     }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 1160c90569e8f7068a1bbf867d56dfc55ebb20f7
     public static void setTimelines(ArrayList<ArrayList<String>> tl) {
         timelines = tl;
     }
@@ -283,6 +280,7 @@ class ClientHandler extends Thread {
 //                    }
 
                     ttweetser.setHashtags(hashtags); //sets with the changes made
+                    ttweetser.setUsersToSub(usersToSub); //sets with changes made
                     writer.println("operation success");
                 } else if (received.length() > 11 && received.substring(0,11).equals("subscribe #")) {
 //                    subscribe logic
@@ -321,7 +319,6 @@ class ClientHandler extends Thread {
                             usersToSub.replace(username, values);
                         }
                         check = 0; //reset check
-                        ttweetser.setUsersToSub(usersToSub);
                         //System.out.println(usersToSub);
                         //System.out.println(hashtags);
                         writer.println("operation success");
@@ -329,6 +326,7 @@ class ClientHandler extends Thread {
                         writer.println("sub " + sub + " failed, already exists or exceeds 3 limitation");
                     }
                     ttweetser.setHashtags(hashtags); //sets with the changes made
+                    ttweetser.setUsersToSub(usersToSub); //sets with changes made
                 } else if (received.equals("timeline")) {
                     //timeline logic
                     //loop through the timelines array
