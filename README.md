@@ -18,4 +18,4 @@ To start the server:
 To start the client:
     java ttweetcli <IP number> <port number> <username>
 
-There are no dependent packages needed to run the code. However, when using make clean and make, it had to be in an intellij project to recognize the make call.
+There are no dependent packages needed to run the code. However, when using make clean and make, it has to be run on a Mac OS.
