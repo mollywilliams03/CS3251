@@ -255,12 +255,8 @@ class ClientHandler extends Thread {
                             ArrayList<ClientHandler> toRemoveFrom = set.getValue(); //gets the value of this particular set
                             toRemoveFrom.remove(this); //removes if its there
                         }
-                        ArrayList<String> values = usersToSub.get(username); //current users current subscriptions
-                        for (int i = 0; i < values.size(); i++) {
-                            values.remove(i);
-                        }
-                        System.out.println(values);
-
+                        ArrayList<String> newList = new ArrayList<String>(); //makes new empty arraylist for the user's subscriptions
+                        usersToSub.replace(this.username, newList); //replaces the value
                     } else {
                         ArrayList<ClientHandler> toRemoveFrom = hashtags.get(unhash);
                         toRemoveFrom.remove(this);
