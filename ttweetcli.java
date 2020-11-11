@@ -65,6 +65,9 @@ public class ttweetcli {
                 if (reader.ready()) {
                     line = reader.readLine(); //read server response
                     if (line != null) {
+                        if (line.equals("socket closed")) {
+                            System.exit(0);
+                        }
 
                         if (!line.equals("null")) {
                             System.out.println(line);
@@ -88,7 +91,7 @@ public class ttweetcli {
 
         } catch (IOException ex) { //check for valid serverport
 
-            System.out.println("Server not found");
+            System.out.println("error: server port invalid, connection refused.");
             System.exit(0);
         }
     }
