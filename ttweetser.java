@@ -300,7 +300,7 @@ class ClientHandler extends Thread {
                                 if (hashtags.containsKey(sub)) { //if its already in there
                                     ArrayList<ClientHandler> toAddTo = hashtags.get(sub); //gets hashtag's arraylist
                                     if (toAddTo.contains(this)) {
-                                        writer.println("sub " + sub + " failed, already exists or exceeds 3 limitation");
+                                        writer.println("operation failed: sub " + sub + " failed, already exists or exceeds 3 limitation");
                                     } else {
                                         toAddTo.add(this); //adds the user to the arraylist
                                         writer.println("operation success");
@@ -327,7 +327,7 @@ class ClientHandler extends Thread {
                             //System.out.println(hashtags);
                             // writer.println("operation success");
                         } else {
-                            writer.println("sub " + sub + " failed, already exists or exceeds 3 limitation");
+                            writer.println("operation failed: sub " + sub + " failed, already exists or exceeds 3 limitation");
                         }
                         ttweetser.setHashtags(hashtags); //sets with the changes made
                         ttweetser.setUsersToSub(usersToSub); //sets with changes made
