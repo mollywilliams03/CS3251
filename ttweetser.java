@@ -43,10 +43,7 @@ public class ttweetser {
         return timelines;
     }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 886edb1d4fc99cbb6adf1769d262a55d0c33cb4a
     public static void setTimelines(ArrayList<ArrayList<String>> tl) {
         timelines = tl;
     }
@@ -125,7 +122,6 @@ public class ttweetser {
                     Thread newThread = new ClientHandler(socket, in, out, line);
                     newThread.start();
                 }
-
             }
             catch (Exception e)
             {
@@ -253,22 +249,35 @@ class ClientHandler extends Thread {
                     //remove this user from the hashmap of hashtags
                     String unhash = received.substring(13,received.length()); //gets the hashtag
                     HashMap<String, ArrayList<ClientHandler>> hashtags = ttweetser.getHashtags(); //gets the hashtags
+                    HashMap<String, ArrayList<String>> usersToSub = ttweetser.getUsersToSub(); //gets the users mapped with their subs
                     if (unhash.equals("ALL")) {
                         for (Map.Entry<String, ArrayList<ClientHandler>> set : hashtags.entrySet()) { //loops through the hashtags
                             ArrayList<ClientHandler> toRemoveFrom = set.getValue(); //gets the value of this particular set
                             toRemoveFrom.remove(this); //removes if its there
                         }
+                        ArrayList<String> values = usersToSub.get(username); //current users current subscriptions
+                        for (int i = 0; i < values.size(); i++) {
+                            values.remove(i);
+                        }
+                        System.out.println(values);
+
                     } else {
                         ArrayList<ClientHandler> toRemoveFrom = hashtags.get(unhash);
                         toRemoveFrom.remove(this);
-                    }
-                    HashMap<String, ArrayList<String>> usersToSub = ttweetser.getUsersToSub(); //gets the users mapped with their subs
-                    ArrayList<String> values = usersToSub.get(username); //current users current subscriptions
-                    for (int i = 0; i < values.size(); i++) {
-                        if (values.get(i).equals(unhash)) {
-                            values.remove(i);
+                        ArrayList<String> values = usersToSub.get(username); //current users current subscriptions
+                        for (int i = 0; i < values.size(); i++) {
+                            if (values.get(i).equals(unhash)) {
+                                values.remove(i);
+                            }
                         }
                     }
+                    //HashMap<String, ArrayList<String>> usersToSub = ttweetser.getUsersToSub(); //gets the users mapped with their subs
+                    //ArrayList<String> values = usersToSub.get(username); //current users current subscriptions
+//                    for (int i = 0; i < values.size(); i++) {
+//                        if (values.get(i).equals(unhash)) {
+//                            values.remove(i);
+//                        }
+//                    }
 
                     ttweetser.setHashtags(hashtags); //sets with the changes made
                     writer.println("operation success");
