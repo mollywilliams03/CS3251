@@ -1,0 +1,24 @@
+Output Sample of Test Scenario:
+Mollys-MacBook-Pro-3:src mollywilliams$ javac ttweetcl.java
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -u localhost 13500 "test"
+Server not found
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -d localhost 13500
+Server not found
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -d localhost 13500
+Empty Message
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -u localhost 13500 "testttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"
+Max number of characters is 150. You had 183
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -d localhost 13500
+Empty Message
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -u localhost 13500 "this is my first test"
+message upload successful
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -d localhost 13500
+this is my first test
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -u localhost 13500 "this is my second test"
+message upload successful
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -d localhost 13500
+this is my second test
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -u localhost 13500 "testttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"
+Max number of characters is 150. You had 183
+Mollys-MacBook-Pro-3:src mollywilliams$ java ttweetcl -d localhost 13500
+this is my second test
